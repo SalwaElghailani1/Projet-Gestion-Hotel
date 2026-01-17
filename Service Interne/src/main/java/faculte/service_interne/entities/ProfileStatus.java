@@ -17,5 +17,11 @@ public enum ProfileStatus {
     VALIDATED,
 
     /** Profil refusé par un administrateur */
-    REJECTED
+    REJECTED,
+
+    /** Utilisateur connecté et actif */
+    ON_WORK,
+
+    /** Utilisateur déconnecté */
+    OUT_WORK
 }
