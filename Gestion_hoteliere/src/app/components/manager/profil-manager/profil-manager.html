@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROYELLAS HOTEL - Profil</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="profile-container">
+  <div class="sidebar">
+    <div class="logo-section">
+      <div class="logo">
+        <i class="fas fa-crown"></i>
+        <span>ROYELLAS <span class="hotel-name">HOTEL</span></span>
+      </div>
+      <p class="welcome-text">Welcome Back,</p> <div class="user-details"><h3>{{user.nom}} {{user.prenom}}</h3></div>
+    </div>
+
+    <div class="nav-menu">
+      <div class="nav-item"
+           [class.active]="activeSection === 'profile'"
+           (click)="showSection('profile')">
+        <div class="nav-icon">
+          <i class="fas fa-user"></i>
+        </div>
+        <span class="nav-text">Profil</span>
+      </div>
+
+      <div class="nav-item"
+           [class.active]="activeSection === 'Dashboard'"
+           (click)="showSection('Dashboard')">
+        <div class="nav-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <span class="nav-text">Dashboard</span>
+      </div>
+
+      <div class="nav-item"
+           [class.active]="activeSection === 'rooms'"
+           (click)="showSection('rooms')">
+        <div class="nav-icon">
+          <i class="fas fa-bed"></i>
+        </div>
+        <span class="nav-text">Rooms</span>
+      </div>
+
+      <div class="nav-item"
+           [class.active]="activeSection === 'services'"
+           (click)="showSection('services')">
+        <div class="nav-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <span class="nav-text">internal services</span>
+      </div>
+
+      <div class="nav-item"
+           [class.active]="activeSection === 'settings'"
+           (click)="showSection('settings')">
+        <div class="nav-icon">
+          <i class="fas fa-cog"></i>
+        </div>
+        <span class="nav-text">Settings</span>
+      </div>
+
+      <div class="nav-item"
+           [class.active]="activeSection === 'contact'"
+           (click)="showSection('contact')">
+        <div class="nav-icon">
+          <i class="fas fa-phone"></i>
+        </div>
+        <span class="nav-text">Contact Us</span>
+      </div>
+
+      <div class="nav-item"
+           [class.active]="activeSection === 'report'"
+           (click)="showSection('report')">
+        <div class="nav-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <span class="nav-text">Signaler</span>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+
+      <div class="sidebar-actions">
+        <button class="nav-btn logout-btn" (click)="logout()">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Déconnexion</span>
+        </button>
+        <button class="nav-btn delete-btn" (click)="deleteAccount()">
+          <i class="fas fa-trash-alt"></i>
+          <span>Supprimer</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- Profile Section -->
+    <div class="content-section profile-edit" *ngIf="activeSection === 'profile'">
+      <div class="page-header">
+        <h1><i class="fas fa-user-edit"></i> Modifier le Profil</h1>
+        <p class="page-subtitle">Mettez à jour vos informations personnelles</p>
+      </div>
+
+      <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" class="profile-form">
+        <div class="form-header">
+          <div class="form-avatar-section">
+            <div class="avatar-info">
+              <h3>{{user.nom}} {{user.prenom}}</h3>
+              <p>{{profileForm.get('email')?.value}}</p>
+              <p>
+                You are the manager. You can visualize the dashboard, manage rooms by creating, editing, or deleting them,
+                and oversee all internal services of the hotel.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-content">
+          <div class="form-section">
+            <h3><i class="fas fa-id-card"></i> Informations Personnelles</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="nom">Nom *</label>
+                <input type="text" id="nom" formControlName="nom" placeholder="Your LastName" readonly>
+              </div>
+
+              <div class="form-group">
+                <label for="prenom">Prénom *</label>
+                <input type="text" id="prenom" formControlName="prenom" placeholder="Your FirstName" readonly>
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" formControlName="email" placeholder="Your Email" readonly>
+              </div>
+
+
+              <div class="form-group">
+                <label for="tel">Téléphone *</label>
+                <input type="tel" id="tel" formControlName="tel" placeholder="06 XX XX XX XX">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3><i class="fas fa-info-circle"></i> Informations Additionnelles</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="dateNaissance">Date de naissance *</label>
+                <input type="date" id="dateNaissance" formControlName="dateNaissance">
+              </div>
+
+              <div class="form-group">
+                <label for="cne">CNE *</label>
+                <input type="text" id="cne" formControlName="cne" placeholder="Votre CNE">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="cancelEdit()">
+              <i class="fas fa-times"></i> Annuler
+            </button>
+            <button type="submit" class="btn-primary">
+              <i class="fas fa-save"></i> Enregistrer les modifications
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="content-section" *ngIf="activeSection==='Dashboard'">
+
+      <div class="page-header">
+        <h1><i class="fas fa-chart-line"></i> Dashboard</h1>
+      </div>
+
+      <!-- ===== STATS CARDS ===== -->
+      <div class="stats-cards">
+        <div class="stat-card">
+          <h3>Total Internal Services</h3>
+          <p>{{ internalUsers.length }}</p>
+        </div>
+
+        <div class="stat-card">
+          <h3>Total Rooms</h3>
+          <p>{{ rooms.length }}</p>
+        </div>
+
+        <div class="stat-card">
+          <h3>Réservations</h3>
+          <p>78</p>
+        </div>
+
+        <div class="stat-card">
+          <h3>Revenus</h3>
+          <p>120 000 MAD</p>
+        </div>
+      </div>
+
+      <!-- ===== DIAGRAMMES ===== -->
+      <div class="charts-grid">
+
+        <!-- Bar Chart -->
+        <div class="chart-card">
+          <h3>Réservations par mois</h3>
+
+          <div class="bar-chart">
+            <div class="bar"><span>Jan</span><div style="height:60%"></div></div>
+            <div class="bar"><span>Fév</span><div style="height:80%"></div></div>
+            <div class="bar"><span>Mar</span><div style="height:40%"></div></div>
+            <div class="bar"><span>Avr</span><div style="height:90%"></div></div>
+            <div class="bar"><span>Mai</span><div style="height:70%"></div></div>
+          </div>
+        </div>
+
+        <!-- Progress Chart -->
+        <div class="chart-card">
+          <h3>Taux d’occupation des chambres</h3>
+
+          <div class="progress-item">
+            <span>Chambres occupées</span>
+            <div class="progress-bar">
+              <div class="progress-fill occupied" [style.width.%]="getRoomStatusPercentage('Occupée')"></div>
+            </div>
+            <strong>{{ getRoomStatusPercentage('Occupée') }}%</strong>
+          </div>
+
+          <div class="progress-item">
+            <span>Disponibles</span>
+            <div class="progress-bar">
+              <div class="progress-fill available" [style.width.%]="getRoomStatusPercentage('Disponible')"></div>
+            </div>
+            <strong>{{ getRoomStatusPercentage('Disponible') }}%</strong>
+          </div>
+
+          <div class="progress-item">
+            <span>Maintenance</span>
+            <div class="progress-bar">
+              <div class="progress-fill maintenance" [style.width.%]="getRoomStatusPercentage('Maintenance')"></div>
+            </div>
+            <strong>{{ getRoomStatusPercentage('Maintenance') }}%</strong>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <div class="content-section" *ngIf="activeSection==='rooms'">
+
+      <div class="page-header">
+        <h1><i class="fas fa-bed"></i> Chambres</h1>
+        <button class="btn-sm create-room" (click)="openCreateRoomModal()">Créer Room</button>
+      </div>
+
+      <!-- ===== ROOMS TABLE ===== -->
+      <div class="rooms-table">
+        <table>
+          <thead>
+          <tr>
+            <th>Numéro</th>
+            <th>Type</th>
+            <th>Prix</th>
+            <th>État</th>
+            <th>Description</th>
+            <th>Images</th>
+            <th>Taux</th>
+            <th>Lit (L x l)</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let room of rooms">
+            <td>{{ room.numero }}</td>
+            <td>{{ room.type }}</td>
+            <td>{{ room.prix }} MAD</td>
+            <td>
+          <span class="status" [ngClass]="{
+            'available': room.etat === 'Disponible',
+            'occupied': room.etat === 'Occupée',
+            'maintenance': room.etat === 'Maintenance'
+          }">
+            {{ room.etat }}
+          </span>
+            </td>
+            <td>{{ room.description }}</td>
+            <td>
+              <img [src]="'http://localhost:8093/uploads/' + room.image" alt="Room image" />
+            </td>
+            <td>{{ room.taux }} %</td>
+            <td>{{ room.lit_long }} x {{ room.lit_large }} cm</td>
+            <td>
+              <button class="btn-sm edit" (click)="editRoom(room)">Éditer</button>
+              <button class="btn-sm delete" (click)="deleteRoom(room.id)">Supprimer</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- ===== CREATE ROOM MODAL ===== -->
+    <div class="modal" *ngIf="createRoomModalOpen">
+      <div class="modal-overlay" (click)="closeCreateRoomModal()"></div>
+      <div class="modal-content">
+        <span class="close" (click)="closeCreateRoomModal()">&times;</span>
+        <h2>{{ isEditMode ? 'Modifier une chambre' : 'Créer une nouvelle chambre' }}</h2>
+
+        <form (ngSubmit)="submitRoom()">
+
+          <!-- Basic info -->
+          <input [(ngModel)]="selectedRoom.numero" name="numero" placeholder="Numéro" required>
+          <select [(ngModel)]="selectedRoom.type" name="type" required>
+            <option>Single</option>
+            <option>Double</option>
+            <option>Suite</option>
+          </select>
+          <input type="number" [(ngModel)]="selectedRoom.prix" name="prix" placeholder="Prix (MAD)" required>
+          <select [(ngModel)]="selectedRoom.etat" name="etat" required>
+            <option>Disponible</option>
+            <option>Occupée</option>
+            <option>Maintenance</option>
+          </select>
+
+          <!-- Additional fields -->
+          <textarea [(ngModel)]="selectedRoom.description" name="description" placeholder="Description"></textarea>
+          <input type="number" [(ngModel)]="selectedRoom.taux" name="taux" placeholder="Taux (%)">
+          <input type="number" [(ngModel)]="selectedRoom.lit_long" name="lit_long" placeholder="Longueur lit (cm)">
+          <input type="number" [(ngModel)]="selectedRoom.lit_large" name="lit_large" placeholder="Largeur lit (cm)">
+
+          <!-- Image -->
+          <label>Image de la chambre</label>
+          <input type="file" (change)="onImageSelected($event)" accept="image/*">
+          <div *ngIf="imagePreview">
+            <p>Aperçu:</p>
+            <img [src]="imagePreview" alt="Room Image" style="max-width:200px; max-height:150px;">
+          </div>
+
+          <button type="submit" class="btn-sm create-room">
+            {{ isEditMode ? 'Modifier' : 'Créer' }}
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+
+
+    <div class="content-section" *ngIf="activeSection === 'services'">
+
+      <div class="page-header">
+        <h1><i class="fas fa-users"></i> Internal Services</h1>
+        <p class="page-subtitle">Liste des employés et leurs horaires</p>
+      </div>
+
+      <div class="internal-services-table">
+        <table>
+          <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let user of internalUsers">
+            <td>{{ user.nom }}</td>
+            <td>{{ user.prenom }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.metierRole }}</td>
+            <td>
+              <span [ngClass]="{
+                    'status-onwork': user.status === 'ON_WORK',
+                    'status-outwork': user.status === 'OUT_WORK',
+                    'status-draft': user.status === 'DRAFT'
+                  }">
+                {{ user.status }}
+              </span>
+            </td>
+
+
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Settings Section -->
+    <div class="content-section" *ngIf="activeSection === 'settings'">
+      <div class="page-header">
+        <h1><i class="fas fa-cog"></i> Paramètres</h1>
+      </div>
+
+      <div class="settings-container">
+        <div class="settings-section">
+          <h2><i class="fas fa-bell"></i> Préférences de Notifications</h2>
+          <div class="settings-options">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h4>Notifications par email</h4>
+                <p>Recevoir des notifications importantes par email</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" [(ngModel)]="settings.emailNotifications">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <h4>Notifications SMS</h4>
+                <p>Recevoir des alertes importantes par SMS</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" [(ngModel)]="settings.smsNotifications">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h2><i class="fas fa-globe"></i> Langue et Région</h2>
+          <div class="form-group">
+            <label for="language">Langue</label>
+            <select id="language" [(ngModel)]="settings.language" class="language-select">
+              <option value="fr">Français</option>
+              <option value="en">English</option>
+              <option value="ar">العربية</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h2><i class="fas fa-lock"></i> Confidentialité</h2>
+          <div class="settings-options">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h4>Profil public</h4>
+                <p>Rendre votre profil visible aux autres utilisateurs</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" [(ngModel)]="settings.publicProfile">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="content-section" *ngIf="activeSection === 'contact'">
+      <div class="page-header">
+        <h1><i class="fas fa-phone"></i> Contact</h1>
+      </div>
+
+      <div class="contact-container">
+        <div class="contact-info-section">
+          <h2><i class="fas fa-info-circle"></i> Informations de Contact</h2>
+          <div class="contact-cards">
+            <div class="contact-card">
+              <div class="contact-icon">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="contact-content">
+                <h3>Email</h3>
+                <p>contact&#64;royellashotel.com</p>
+                <small>Réponse sous 24h</small>
+              </div>
+            </div>
+
+            <div class="contact-card">
+              <div class="contact-icon">
+                <i class="fas fa-phone"></i>
+              </div>
+              <div class="contact-content">
+                <h3>Téléphone</h3>
+                <p>+212 5 XX XX XX XX</p>
+                <small>Lun-Ven: 9h-18h</small>
+              </div>
+            </div>
+
+            <div class="contact-card">
+              <div class="contact-icon">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <div class="contact-content">
+                <h3>Adresse</h3>
+                <p>123 Avenue Mohammed V, Casablanca, Maroc</p>
+                <small>Visites sur rendez-vous</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-form-section">
+          <h2><i class="fas fa-paper-plane"></i> Envoyer un Message</h2>
+          <div class="contact-form">
+            <div class="form-group">
+              <label for="contactSubject">Sujet</label>
+              <input type="text" id="contactSubject" placeholder="Objet de votre message">
+            </div>
+            <div class="form-group">
+              <label for="contactMessage">Message</label>
+              <textarea id="contactMessage" [(ngModel)]="contactMessage"
+                        placeholder="Votre message..." rows="6"></textarea>
+            </div>
+            <button class="btn-primary send-btn" (click)="sendMessage()">
+              <i class="fas fa-paper-plane"></i> Envoyer le Message
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report Section -->
+    <div class="content-section" *ngIf="activeSection === 'report'">
+      <div class="page-header">
+        <h1><i class="fas fa-exclamation-triangle"></i> Signaler un Problème</h1>
+      </div>
+
+      <div class="report-container">
+        <div class="report-form">
+          <div class="form-section">
+            <h3><i class="fas fa-clipboard-list"></i> Détails du Problème</h3>
+            <div class="form-group">
+              <label for="reportType">Type de problème</label>
+              <select id="reportType" [(ngModel)]="report.type">
+                <option value="technical">Problème technique</option>
+                <option value="bug">Bug</option>
+                <option value="suggestion">Suggestion</option>
+                <option value="other">Autre</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="reportSubject">Sujet</label>
+              <input type="text" id="reportSubject" [(ngModel)]="report.subject"
+                     placeholder="Décrivez brièvement le problème">
+            </div>
+
+            <div class="form-group">
+              <label for="reportDescription">Description détaillée</label>
+              <textarea id="reportDescription" [(ngModel)]="report.description"
+                        placeholder="Décrivez le problème en détail..."
+                        rows="6"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="reportScreenshot">Capture d'écran (optionnel)</label>
+              <div class="file-upload">
+                <label for="reportScreenshot" class="file-upload-label">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <span>Choisir un fichier</span>
+                </label>
+                <input id="reportScreenshot" type="file"
+                       (change)="onScreenshotSelected($event)"
+                       accept="image/*" hidden>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-secondary">
+              <i class="fas fa-times"></i> Annuler
+            </button>
+            <button class="btn-primary">
+              <i class="fas fa-paper-plane"></i> Envoyer le Rapport
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Confirmation Modal -->
+<div class="modal" *ngIf="showModal">
+  <div class="modal-content">
+    <div class="modal-icon">
+      <i class="fas fa-exclamation-circle"></i>
+    </div>
+    <h2>Confirmation</h2>
+    <p>{{modalMessage}}</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" (click)="showModal = false">
+        <i class="fas fa-times"></i> Annuler
+      </button>
+      <button class="btn-danger" (click)="confirmAction()">
+        <i class="fas fa-check"></i> Confirmer
+      </button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

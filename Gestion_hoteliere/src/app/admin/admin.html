@@ -1,0 +1,239 @@
+<!-- src/app/admin/admin.component.html -->
+<mat-sidenav-container class="admin-container" fullscreen>
+  <!-- Sidebar -->
+  <mat-sidenav 
+    [mode]="'side'" 
+    [opened]="sidenavOpened"
+    class="admin-sidenav"
+    fixedInViewport>
+    
+    <div class="sidenav-header">
+      <div class="logo-container">
+        <mat-icon class="logo-icon">hotel</mat-icon>
+      </div>
+      <h3>ROYELLAS Hôtel</h3>
+      <p class="sidenav-subtitle">Administration</p>
+    </div>
+
+    <mat-nav-list>
+      <a 
+        mat-list-item 
+        *ngFor="let item of menuItems"
+        [routerLink]="item.path"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact: item.exact || false}"
+        [matTooltip]="item.tooltip"
+        matTooltipPosition="right">
+        <mat-icon matListItemIcon>{{item.icon}}</mat-icon>
+        <span matListItemTitle>{{item.label}}</span>
+        <span class="badge" *ngIf="item.badge && item.badge > 0">
+          {{item.badge}}
+        </span>
+      </a>
+    </mat-nav-list>
+
+    <div class="sidenav-footer">
+      <div class="user-info" (click)="navigateToProfile()">
+        <mat-icon class="user-icon">account_circle</mat-icon>
+        <div class="user-details">
+          <strong>{{user?.firstName}} {{user?.lastName}}</strong>
+          <small>Administrateur</small>
+        </div>
+      </div>
+    </div>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content class="admin-content">
+    <!-- Toolbar -->
+    <mat-toolbar color="primary" class="admin-toolbar">
+      <button mat-icon-button (click)="toggleSidenav()" class="menu-btn">
+        <mat-icon>menu</mat-icon>
+      </button>
+      
+      <div class="page-header">
+        <span class="toolbar-title">{{getPageTitle()}}</span>
+        <span class="last-update" *ngIf="currentRoute === '/admin'">
+          <mat-icon class="update-icon">update</mat-icon>
+          Mis à jour à {{getLastUpdateTime()}}
+        </span>
+      </div>
+      
+      <span class="spacer"></span>
+      
+      <!-- Notifications -->
+      <button mat-icon-button [matMenuTriggerFor]="notificationsMenu" class="notif-btn">
+        <mat-icon 
+          [matBadge]="getUnreadNotificationsCount()" 
+          matBadgeColor="warn" 
+          matBadgeSize="small">
+          notifications
+        </mat-icon>
+      </button>
+      
+      <!-- User Menu -->
+      <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
+        <mat-icon>account_circle</mat-icon>
+        <span>{{user?.firstName}}</span>
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <!-- Welcome Banner (visible uniquement sur dashboard) -->
+    <div class="welcome-banner" *ngIf="currentRoute === '/admin'">
+      <div class="welcome-content">
+        <h1>{{getGreeting()}}, {{user?.firstName}}! 👋</h1>
+        <p>Bienvenue dans le système d'administration de l'hôtel Luxury Suite</p>
+      </div>
+      <div class="welcome-icon">
+        <mat-icon>hotel_class</mat-icon>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-section" *ngIf="currentRoute === '/admin'">
+      <mat-card class="stat-card">
+        <div class="stat-icon-container">
+          <mat-icon class="stat-icon" color="primary">people</mat-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{stats.totalUsers}}</h3>
+          <p>Utilisateurs</p>
+        </div>
+        <div class="stat-trend">
+          <mat-icon class="trend-up">trending_up</mat-icon>
+          <span class="trend-text">+12%</span>
+        </div>
+      </mat-card>
+      
+      <mat-card class="stat-card">
+        <div class="stat-icon-container">
+          <mat-icon class="stat-icon" color="accent">assignment_ind</mat-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{stats.pendingProfiles}}</h3>
+          <p>Profils en attente</p>
+        </div>
+        <div class="stat-trend" *ngIf="stats.pendingProfiles > 0">
+          <mat-icon class="trend-alert">warning</mat-icon>
+          <span class="trend-text alert">Action requise</span>
+        </div>
+      </mat-card>
+      
+      <mat-card class="stat-card">
+        <div class="stat-icon-container">
+          <mat-icon class="stat-icon" color="warn">event_available</mat-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{stats.todayBookings}}</h3>
+          <p>Réservations aujourd'hui</p>
+        </div>
+        <div class="stat-trend">
+          <span class="revenue">{{stats.revenueToday | currency:'EUR'}}</span>
+        </div>
+      </mat-card>
+      
+      <mat-card class="stat-card">
+        <div class="stat-icon-container">
+          <mat-icon class="stat-icon" color="primary">king_bed</mat-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{stats.occupancyRate}}%</h3>
+          <p>Taux d'occupation</p>
+        </div>
+        <div class="stat-trend">
+          <mat-icon class="trend-up">star</mat-icon>
+          <span class="trend-text">{{stats.satisfactionRate}}/5</span>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="chart-section" *ngIf="currentRoute === '/admin'">
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Utilisateurs par rôle</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <canvas 
+            baseChart
+            [data]="roleChartData"
+            [options]="chartOptions"
+            [type]="'doughnut'">
+          </canvas>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Loading 
+    <div class="loading-container" *ngIf="loading">
+      <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+      <p class="loading-text">Chargement des données...</p>
+    </div>-->
+
+    <!-- Router Outlet -->
+    <div class="content-wrapper">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+<!-- Notifications Menu -->
+<mat-menu #notificationsMenu="matMenu" class="notifications-menu">
+  <div class="notification-header">
+    <h3>Notifications</h3>
+    <button mat-button color="primary" class="mark-read-btn" (click)="markAllNotificationsAsRead()">
+      Tout marquer comme lu
+    </button>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="notifications-list">
+    <div class="notification-item" *ngFor="let notif of notifications" 
+         [class.unread]="!notif.read"
+         (click)="markNotificationAsRead(notif)">
+      <mat-icon [color]="notif.color" class="notification-icon">{{notif.icon}}</mat-icon>
+      <div class="notification-content">
+        <strong>{{notif.title}}</strong>
+        <p>{{notif.message}}</p>
+        <span class="notification-time">{{notif.time}}</span>
+      </div>
+      <mat-icon class="read-indicator" *ngIf="!notif.read">fiber_manual_record</mat-icon>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+  <button mat-button color="primary" class="view-all-btn">
+    <mat-icon>list</mat-icon>
+    Voir toutes les notifications
+  </button>
+</mat-menu>
+
+<!-- User Menu -->
+<mat-menu #userMenu="matMenu" class="user-menu">
+  <div class="user-menu-header">
+    <div class="user-avatar">
+      <mat-icon>account_circle</mat-icon>
+    </div>
+    <div class="user-info">
+      <strong>{{user?.firstName}} {{user?.lastName}}</strong>
+      <small>{{user?.email}}</small>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+  <button mat-menu-item (click)="navigateToProfile()">
+    <mat-icon>account_circle</mat-icon>
+    <span>Mon profil</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>hotel</mat-icon>
+    <span>Tableau de bord</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>settings</mat-icon>
+    <span>Paramètres</span>
+  </button>
+  <mat-divider></mat-divider>
+  <button mat-menu-item (click)="logout()">
+    <mat-icon>logout</mat-icon>
+    <span>Déconnexion</span>
+  </button>
+</mat-menu>

@@ -1,0 +1,99 @@
+<div class="chatbot-container">
+  <!-- Chatbot Button -->
+  <button class="chatbot-toggle-btn" (click)="toggleChat()">
+    @if (isOpen) {
+      <i class="fas fa-times"></i>
+    } @else {
+      <i class="fas fa-comment-dots"></i>
+      @if (messages.length > 1) {
+        <span class="notification-dot"></span>
+      }
+    }
+  </button>
+
+  <!-- Chat Window -->
+  @if (isOpen) {
+    <div class="chat-window">
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <div class="chat-header-content">
+          <div class="chat-avatar">
+            <i class="fas fa-concierge-bell"></i>
+          </div>
+          <div class="chat-info">
+            <h3>Roy - AI Concierge</h3>
+            <p>Royellas Hotel Assistant</p>
+          </div>
+          <div class="chat-actions">
+            <button class="chat-action-btn" (click)="clearChat()" title="Clear chat">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+            <button class="chat-action-btn" (click)="toggleChat()" title="Close chat">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Messages -->
+      <div class="chat-messages" #chatMessages>
+        @for (message of messages; track message.timestamp) {
+          <div class="message" [class.user]="message.sender === 'user'" [class.bot]="message.sender === 'bot'">
+            <div class="message-content">
+              <div class="message-text">{{ message.text }}</div>
+              <div class="message-time">
+                {{ formatTime(message.timestamp) }}
+              </div>
+            </div>
+          </div>
+        }
+        
+        <!-- Loading Indicator -->
+        @if (isLoading) {
+          <div class="message bot">
+            <div class="message-content">
+              <div class="message-text typing">
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Quick Questions -->
+      <div class="quick-questions">
+        <p>Quick questions:</p>
+        <div class="quick-buttons">
+          @for (question of quickQuestions; track question) {
+            <button class="quick-btn" (click)="selectQuickQuestion(question)">
+              {{ question }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Chat Input -->
+      <div class="chat-input">
+        <div class="input-wrapper">
+          <textarea 
+            [(ngModel)]="userMessage"
+            (keydown)="onKeyPress($event)"
+            placeholder="Type your message here..."
+            rows="1"
+            class="message-input"
+            #messageInput
+          ></textarea>
+          <button class="send-btn" (click)="sendMessage()" [disabled]="!userMessage.trim() || isLoading">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+        <div class="input-hint">
+          <i class="fas fa-info-circle"></i>
+          <span>Ask about bookings, amenities, services, or anything else!</span>
+        </div>
+      </div>
+    </div>
+  }
+</div>
