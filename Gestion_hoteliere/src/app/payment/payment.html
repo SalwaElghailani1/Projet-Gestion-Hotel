@@ -1,0 +1,64 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- Dans index.html -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<!-- Navigation Bar -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo">
+      <i class="fas fa-crown"></i>
+      <span>ROYELLAS <span class="hotel-name">HOTEL</span></span>
+    </div>
+
+    <ul class="nav-menu">
+      <li *ngFor="let item of navItems">
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+        >
+          {{ item.name }}
+        </a>
+      </li>
+
+    </ul>
+  </div>
+</nav>
+
+<div>
+  <h2>Payment Here ... Please Wait </h2>
+</div>
+<div class="reservations-container">
+
+  <table class="reservations-table">
+    <thead>
+    <tr>
+      <th>Room</th>
+      <th>Room type</th>
+      <th>Date Begin</th>
+      <th>Date End</th>
+      <th>Statut Reservation</th>
+      <th>Total Price</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let res of clientReservations">
+      <td>{{ res.chambre?.numero || res.chambre_id }}</td>
+      <td>{{ res.chambre?.type || res.chambre_id }}</td>
+      <td>{{ res.dateDebut | date:'dd/MM/yyyy' }}</td>
+      <td>{{ res.dateFin | date:'dd/MM/yyyy' }}</td>
+      <td>
+        {{ res.statut }}
+      </td>
+      <td>{{ res.totalPrix | number:'1.2-2' }} MAD</td>
+      <td>
+        <button class="btn-pay">Payer</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+

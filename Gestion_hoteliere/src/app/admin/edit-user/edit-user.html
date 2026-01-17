@@ -1,0 +1,170 @@
+<div class="edit-user-container">
+  <!-- Header -->
+  <div class="form-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <mat-icon>edit</mat-icon>
+      </div>
+      <div class="header-text">
+        <h1>Modifier l'utilisateur</h1>
+        <p *ngIf="user">Édition de {{user.firstName}} {{user.lastName}}</p>
+        <p *ngIf="!user">Chargement...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <div class="form-card">
+    <div *ngIf="loading" class="loading">
+      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+      <p class="loading-text">Chargement des données...</p>
+    </div>
+
+    <form *ngIf="!loading && user" [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
+      
+      <!-- Informations personnelles -->
+      <div class="form-section">
+        <div class="section-header">
+          <mat-icon>info</mat-icon>
+          <h3>Informations personnelles</h3>
+        </div>
+        
+        <!-- Prénom et Nom -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">
+              <mat-icon>person</mat-icon>
+              Prénom *
+            </label>
+            <input 
+              type="text" 
+              id="firstName" 
+              formControlName="firstName"
+              placeholder="Entrez le prénom"
+              class="form-input"
+              [class.error]="hasError('firstName', 'required')">
+            <div class="error-message" *ngIf="hasError('firstName', 'required')">
+              Le prénom est obligatoire
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">
+              <mat-icon>person_outline</mat-icon>
+              Nom *
+            </label>
+            <input 
+              type="text" 
+              id="lastName" 
+              formControlName="lastName"
+              placeholder="Entrez le nom"
+              class="form-input"
+              [class.error]="hasError('lastName', 'required')">
+            <div class="error-message" *ngIf="hasError('lastName', 'required')">
+              Le nom est obligatoire
+            </div>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">
+            <mat-icon>email</mat-icon>
+            Adresse email *
+          </label>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email"
+            placeholder="exemple@royellas.com"
+            class="form-input"
+            [class.error]="hasError('email', 'required') || hasError('email', 'email')">
+          <div class="error-message" *ngIf="hasError('email', 'required')">
+            L'email est obligatoire
+          </div>
+          <div class="error-message" *ngIf="hasError('email', 'email')">
+            Format d'email invalide
+          </div>
+        </div>
+      </div>
+
+      <!-- Paramètres du compte -->
+      <div class="form-section">
+        <div class="section-header">
+          <mat-icon>settings</mat-icon>
+          <h3>Paramètres du compte</h3>
+        </div>
+
+        <!-- Rôles -->
+        <div class="form-group">
+          <label for="roles">
+            <mat-icon>badge</mat-icon>
+            Rôle(s) *
+          </label>
+          <mat-select 
+            id="roles" 
+            formControlName="roles"
+            multiple
+            class="form-select"
+            [class.error]="hasError('roles', 'required')">
+            <mat-option *ngFor="let role of availableRoles" [value]="role.value">
+              {{ role.label }}
+            </mat-option>
+          </mat-select>
+          <div class="error-message" *ngIf="hasError('roles', 'required')">
+            Au moins un rôle est obligatoire
+          </div>
+        </div>
+
+        <!-- Statut -->
+        <div class="form-group">
+          <div class="checkbox-group">
+            <input 
+              type="checkbox" 
+              id="active" 
+              formControlName="active"
+              class="form-checkbox">
+            <label for="active" class="checkbox-label">
+              <mat-icon>check_circle</mat-icon>
+              Compte actif
+              <span class="checkbox-description">L'utilisateur peut se connecter</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button 
+          type="button" 
+          class="btn-cancel"
+          (click)="cancel()"
+          [disabled]="submitting">
+          <mat-icon>arrow_back</mat-icon>
+          Annuler
+        </button>
+
+        <div class="action-buttons">
+          <button 
+            type="submit" 
+            class="btn-submit"
+            [disabled]="!userForm.valid || submitting">
+            <div class="submit-content">
+              <mat-icon *ngIf="!submitting">save</mat-icon>
+              <mat-spinner *ngIf="submitting" diameter="20"></mat-spinner>
+              <span>{{ submitting ? 'Mise à jour...' : 'Enregistrer les modifications' }}</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <div *ngIf="!loading && !user" class="empty-state">
+      <mat-icon>error</mat-icon>
+      <p>Utilisateur non trouvé</p>
+      <button mat-button color="primary" routerLink="/admin/users">
+        Retour à la liste
+      </button>
+    </div>
+  </div>
+</div>

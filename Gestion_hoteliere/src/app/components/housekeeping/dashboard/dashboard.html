@@ -1,0 +1,460 @@
+<div class="profile-container">
+
+  <!-- WHITE SIDEBAR -->
+  <div class="sidebar white-sidebar">
+    <div class="logo-section">
+      <div class="logo">
+        <i class="fas fa-crown"></i>
+        <span>ROYELLAS <span class="hotel-name">HOTEL</span></span>
+      </div>
+      <p class="welcome-text">Welcome,</p>
+      <div class="user-details">
+        <h3>{{ userName }}</h3>
+        <p class="user-role">Housekeeping Staff</p>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <div class="nav-menu">
+
+      <div class="nav-item"
+           [class.active]="activeSection === 'profile'"
+           (click)="showSection('profile')">
+        <div class="nav-icon"><i class="fas fa-user"></i></div>
+        <span class="nav-text">Profile</span>
+      </div>
+
+      <div class="nav-item"
+           [class.active]="activeSection === 'dashboard'"
+           (click)="showSection('dashboard')">
+        <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
+        <span class="nav-text">Dashboard</span>
+      </div>
+
+      <div class="nav-item"
+           [class.active]="activeSection === 'rooms'"
+           (click)="showSection('rooms')">
+        <div class="nav-icon"><i class="fas fa-bed"></i></div>
+        <span class="nav-text">Rooms</span>
+      </div>
+
+      <div class="nav-item"
+           [class.active]="activeSection === 'tasks'"
+           (click)="showSection('tasks')">
+        <div class="nav-icon"><i class="fas fa-tasks"></i></div>
+        <span class="nav-text">My Tasks</span>
+      </div>
+
+
+
+      <div class="nav-item"
+           [class.active]="activeSection === 'notifications'"
+           (click)="showSection('notifications')">
+        <div class="nav-icon"><i class="fas fa-bell"></i></div>
+        <span class="nav-text">Notifications</span>
+        <span class="badge" *ngIf="unreadNotifications > 0">{{unreadNotifications}}</span>
+      </div>
+
+      <div class="nav-item"
+           [class.active]="activeSection === 'settings'"
+           (click)="showSection('settings')">
+        <div class="nav-icon"><i class="fas fa-cog"></i></div>
+        <span class="nav-text">Settings</span>
+      </div>
+
+      <div class="nav-item"
+           [class.active]="activeSection === 'contact'"
+           (click)="showSection('contact')">
+        <div class="nav-icon"><i class="fas fa-phone"></i></div>
+        <span class="nav-text">Contact</span>
+      </div>
+
+
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-actions">
+        <button class="nav-btn logout-btn" (click)="logout()">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </button>
+        <button class="nav-btn delete-btn" (click)="deleteAccount()">
+          <i class="fas fa-trash-alt"></i>
+          <span>Delete</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- DASHBOARD SECTION -->
+    <div class="content-section" *ngIf="activeSection === 'dashboard'">
+      <div class="page-header">
+        <h1><i class="fas fa-broom"></i> Housekeeping Dashboard</h1>
+        <p class="page-subtitle">Overview of your activities</p>
+      </div>
+
+      <div class="stats-cards">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-door-closed"></i></div>
+          <h3>Total Rooms</h3>
+          <p>{{ rooms.length }}</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-broom"></i></div>
+          <h3>To Clean</h3>
+          <p>{{ cleaningRoomsCount }}</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-clipboard-list"></i></div>
+          <h3>My Tasks</h3>
+          <p>{{ tasks.length }}</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+          <h3>Completed Tasks</h3>
+          <p>{{ completedTasksCount }}</p>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h3><i class="fas fa-chart-pie"></i> Room Status</h3>
+        <div class="progress-grid">
+          <div class="progress-item" *ngFor="let s of roomStatusStats">
+            <span>{{ s.label }}</span>
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="s.percentage"></div>
+            </div>
+            <strong>{{ s.count }} ({{ s.percentage }}%)</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROOMS SECTION -->
+    <div class="content-section" *ngIf="activeSection === 'rooms'">
+      <div class="page-header">
+        <h1><i class="fas fa-bed"></i> Room Management</h1>
+        <div class="filter-section">
+          <div class="filter-group">
+            <i class="fas fa-filter"></i>
+            <select class="form-select" [(ngModel)]="filterStatus" (change)="filterRooms()">
+              <option value="all">All Statuses</option>
+              <option value="disponible">Available</option>
+              <option value="occupée">Occupied</option>
+              <option value="maintenance">Maintenance</option>
+            </select>
+          </div>
+          <button class="btn-sm refresh-btn" (click)="loadRooms()">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+
+        </div>
+
+
+      </div>
+
+      <div class="rooms-table-container">
+        <table class="rooms-table">
+          <thead>
+          <tr>
+            <th>Number</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Price (MAD)</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let room of filteredRooms" [class]="'room-row ' + normalizeEtat(room.etat)">
+            <td><strong>#{{ room.numero }}</strong></td>
+            <td>{{ room.type }}</td>
+            <td>
+                <span class="status" [ngClass]="normalizeEtat(room.etat)">
+                  {{ getStatusLabel(room.etat) }}
+                </span>
+              <small *ngIf="room.etat !== filterStatus && filterStatus !== 'all'">
+                (original: {{ room.etat }})
+              </small>
+            </td>
+            <td>{{ room.prix }} MAD</td>
+            <td class="action-buttons">
+              <button *ngIf="normalizeEtat(room.etat) === 'occupée'"
+                      class="btn-sm btn-clean"
+                      (click)="createCleaningTask(room)">
+                <i class="fas fa-broom"></i> Clean
+              </button>
+              <button class="btn-sm btn-details" (click)="viewRoomDetails(room)">
+                <i class="fas fa-eye"></i> Details
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="filteredRooms.length === 0">
+            <td colspan="5" class="no-data">
+              <i class="fas fa-bed"></i>
+              No rooms found with filter "{{ filterStatus }}"
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TASKS SECTION -->
+    <div class="content-section" *ngIf="activeSection === 'tasks'">
+      <div class="page-header">
+        <h1><i class="fas fa-tasks"></i> My Tasks</h1>
+        <div class="filter-section">
+          <div class="filter-group">
+            <i class="fas fa-filter"></i>
+            <select class="form-select" [(ngModel)]="taskFilter" (change)="filterTasks()">
+              <option value="all">All Tasks</option>
+              <option value="pending">Pending</option>
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <button class="btn-sm refresh-btn" (click)="loadMyTasks()">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+        </div>
+      </div>
+
+      <div class="tasks-container">
+        <div *ngIf="filteredTasks.length === 0" class="empty-state">
+          <div class="empty-icon"><i class="fas fa-clipboard-check"></i></div>
+          <h3>No assigned tasks</h3>
+          <p>You don't have any tasks at the moment</p>
+        </div>
+
+        <div class="tasks-grid">
+          <div *ngFor="let task of filteredTasks" class="task-card" [ngClass]="task.status">
+            <div class="task-header">
+              <div class="task-title">
+                <h4>Room #{{ task.chambreId }}</h4>
+                <p class="task-time"><i class="far fa-clock"></i> {{ task.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+              </div>
+              <span class="task-status" [ngClass]="task.status">
+                {{ getStatusLabel(task.status) }}
+              </span>
+            </div>
+
+            <div class="task-body">
+              <p class="task-description">{{ task.description }}</p>
+              <div class="task-priority">
+                <i class="fas fa-flag"></i> Priority:
+                <span class="priority-badge" [ngClass]="'priority-' + task.priority">
+                  {{ task.priority }}
+                </span>
+              </div>
+            </div>
+
+            <div class="task-footer">
+              <div class="task-actions">
+                <button *ngIf="task.status === 'pending'"
+                        class="btn-sm primary-btn"
+                        (click)="startTask(task.id!)">
+                  <i class="fas fa-play"></i> Start
+                </button>
+                <button *ngIf="task.status === 'in_progress'"
+                        class="btn-sm success-btn"
+                        (click)="completeTask(task.id!)">
+                  <i class="fas fa-check"></i> Complete
+                </button>
+                <button class="btn-sm info-btn" (click)="viewTaskDetails(task)">
+                  <i class="fas fa-info-circle"></i> Details
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE SECTION -->
+    <div class="content-section profile-edit" *ngIf="activeSection === 'profile'">
+      <div class="page-header">
+        <h1><i class="fas fa-user-edit"></i> Edit Profile</h1>
+        <p class="page-subtitle">Update your personal information</p>
+      </div>
+
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form">
+        <div class="form-header">
+          <div class="form-avatar-section">
+
+            <div class="avatar-info">
+              <h3>{{ userName }}</h3>
+              <p>Housekeeping Staff</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-content">
+          <div class="form-section">
+            <h3><i class="fas fa-id-card"></i> Personal Information</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="nom">Last Name *</label>
+                <input type="text" id="nom" formControlName="nom" placeholder="Your last name">
+                <div class="error" *ngIf="profileForm.get('nom')?.invalid && profileForm.get('nom')?.touched">
+                  Last name required
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="prenom">First Name *</label>
+                <input type="text" id="prenom" formControlName="prenom" placeholder="Your first name">
+                <div class="error" *ngIf="profileForm.get('prenom')?.invalid && profileForm.get('prenom')?.touched">
+                  First name required
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" formControlName="email" placeholder="email@example.com">
+                <div class="error" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+                  Invalid email
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="tel">Phone *</label>
+                <input type="tel" id="tel" formControlName="tel" placeholder="06 XX XX XX XX">
+                <div class="error" *ngIf="profileForm.get('tel')?.invalid && profileForm.get('tel')?.touched">
+                  Phone required
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3><i class="fas fa-info-circle"></i> Additional Information</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="dateNaissance">Date of Birth *</label>
+                <input type="date" id="dateNaissance" formControlName="dateNaissance">
+              </div>
+
+              <div class="form-group">
+                <label for="cne">CNE *</label>
+                <input type="text" id="cne" formControlName="cne" placeholder="Your CNE">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="cancelEdit()">
+              <i class="fas fa-times"></i> Cancel
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="!profileForm.valid">
+              <i class="fas fa-save"></i> Save
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- NOTIFICATIONS SECTION -->
+    <div class="content-section" *ngIf="activeSection === 'notifications'">
+      <div class="page-header">
+        <h1><i class="fas fa-bell"></i> Notifications</h1>
+        <button class="mark-all-btn" (click)="markAllAsRead()">
+          <i class="fas fa-check-double"></i> Mark all as read
+        </button>
+      </div>
+
+      <div class="notifications-container">
+        <div class="notification-item" *ngFor="let notif of notifications">
+          <div class="notification-icon-bg">
+            <i class="fas fa-info-circle"></i>
+          </div>
+          <div class="notification-content">
+            <div class="notification-header">
+              <h3>{{ notif.title }}</h3>
+              <span class="notification-time">{{ notif.time }}</span>
+            </div>
+            <p class="notification-message">{{ notif.message }}</p>
+          </div>
+        </div>
+        <div *ngIf="!notifications || notifications.length === 0" class="empty-state">
+          <i class="fas fa-bell-slash"></i>
+          <h3>No notifications</h3>
+          <p>You don't have any notifications</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS SECTION -->
+    <div class="content-section" *ngIf="activeSection === 'settings'">
+      <div class="page-header">
+        <h1><i class="fas fa-cog"></i> Settings</h1>
+      </div>
+
+      <div class="settings-container">
+        <div class="settings-section">
+          <h2><i class="fas fa-bell"></i> Notification Preferences</h2>
+          <div class="settings-options">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h4>Email Notifications</h4>
+                <p>Receive important notifications by email</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h2><i class="fas fa-globe"></i> Language & Region</h2>
+          <div class="form-group">
+            <label for="language">Language</label>
+            <select id="language" class="language-select">
+              <option value="fr">Français</option>
+              <option value="en">English</option>
+              <option value="ar">العربية</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT SECTION -->
+    <div class="content-section" *ngIf="activeSection === 'contact'">
+      <div class="page-header">
+        <h1><i class="fas fa-phone"></i> Contact</h1>
+      </div>
+
+      <div class="contact-container">
+        <div class="contact-info-section">
+          <h2><i class="fas fa-info-circle"></i> Contact Information</h2>
+          <div class="contact-cards">
+            <div class="contact-card">
+              <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+              <div class="contact-content">
+                <h3>Email</h3>
+                <p>contact@royellashotel.com</p>
+                <small>Response within 24h</small>
+              </div>
+            </div>
+            <div class="contact-card">
+              <div class="contact-icon"><i class="fas fa-phone"></i></div>
+              <div class="contact-content">
+                <h3>Phone</h3>
+                <p>+212 5 XX XX XX XX</p>
+                <small>Mon-Fri: 9am-6pm</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+</div>

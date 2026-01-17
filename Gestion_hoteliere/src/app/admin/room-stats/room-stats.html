@@ -1,0 +1,66 @@
+<div class="room-stats-container">
+
+  <!-- Cards statistiques individuelles -->
+  <div class="stats-cards">
+    <mat-card class="stat-card beige">
+      <h4>Total des chambres</h4>
+      <span class="value">{{stats.totalRooms}}</span>
+    </mat-card>
+
+    <mat-card class="stat-card maron">
+      <h4>Disponibles</h4>
+      <span class="value">{{stats.availableRooms}}</span>
+    </mat-card>
+
+    <mat-card class="stat-card noir">
+      <h4>Occupées</h4>
+      <span class="value">{{stats.occupiedRooms}}</span>
+    </mat-card>
+
+    <mat-card class="stat-card beige">
+      <h4>Maintenance</h4>
+      <span class="value">{{stats.maintenanceRooms}}</span>
+    </mat-card>
+
+    <mat-card class="stat-card maron">
+      <h4>Chambres simples</h4>
+      <span class="value">{{stats.singleRooms}}</span>
+    </mat-card>
+
+    <mat-card class="stat-card beige">
+      <h4>Chambres doubles</h4>
+      <span class="value">{{stats.doubleRooms}}</span>
+    </mat-card>
+
+    <mat-card class="stat-card maron">
+      <h4>Suites</h4>
+      <span class="value">{{stats.suiteRooms}}</span>
+    </mat-card>
+
+    <mat-card class="stat-card noir">
+      <h4>Prix moyen</h4>
+      <span class="value">{{stats.averagePrice | currency:'EUR'}}</span>
+    </mat-card>
+  </div>
+
+  <!-- Section Charts -->
+  <div class="charts-section">
+    <mat-card class="chart-card">
+      <h4>Répartition par type</h4>
+      <canvas baseChart
+        [data]="roomTypeChartData"
+        [options]="roomTypeChartOptions"
+        [type]="'doughnut'">
+      </canvas>
+    </mat-card>
+
+    <mat-card class="chart-card">
+      <h4>Disponibilité</h4>
+      <canvas baseChart
+        [data]="roomAvailabilityChartData"
+        [options]="roomAvailabilityChartOptions"
+        [type]="'bar'">
+      </canvas>
+    </mat-card>
+  </div>
+</div>

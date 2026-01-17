@@ -1,0 +1,141 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- Dans index.html -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<!-- Navigation Bar -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo">
+      <i class="fas fa-crown"></i>
+      <span>ROYELLAS <span class="hotel-name">HOTEL</span></span>
+    </div>
+
+    <ul class="nav-menu">
+      <li *ngFor="let item of navItems">
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+        >
+          {{ item.name }}
+        </a>
+      </li>
+
+    </ul>
+  </div>
+</nav>
+
+<div class="back-link">
+  <a [routerLink]="'/catalogue'"><i class="fas fa-arrow-left"></i> Back to Catalogue</a>
+</div>
+
+<div class="room-details">
+  <!-- Image -->
+  <img [src]="'http://localhost:8093/uploads/' + room.image"
+       [alt]="room.type"
+       class="room-img">
+
+  <!-- Info -->
+  <div class="room-info">
+    <h2 class="room-number">Room {{ room.numero }}</h2>
+    <h3 class="room-type"> For {{ room.type }} Guests</h3>
+    <p class="room-desc">{{ room.description }}</p>
+    <p class="room-price"><span>{{ room.prix }} MAD/night</span></p>
+    <p class="room-bed"><i class="fas fa-bed"></i> Bed: {{ room.lit_long }}x{{ room.lit_large }}</p>
+
+    <!-- Status badge -->
+    <p class="room-status-msg"
+       [ngClass]="{
+         'occupied-msg': room.etat === 'Occupée',
+         'maintenance-msg': room.etat === 'Maintenance',
+         'available-msg': room.etat === 'Disponible'
+       }">
+      {{ room.etat }}
+    </p>
+
+    <!-- Reserve button -->
+    <button
+      class="reserve-btn"
+      [disabled]="room.etat !== 'Disponible'"
+      (click)="openModal()">
+      Reserve a Room
+    </button>
+  </div>
+
+
+  <!-- Modal -->
+  <div class="modal" *ngIf="showModal">
+    <div class="modal-content">
+      <span class="close" (click)="closeModal()">&times;</span>
+      <h2>Reservation Form</h2>
+      <form (ngSubmit)="submitReservation($event)" #resForm="ngForm">
+
+        <!-- Row 1: First + Last Name -->
+        <div class="input-row">
+          <div>
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" name="fname" [(ngModel)]="reservation.fname" placeholder="Your first name" required>
+          </div>
+          <div>
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" name="lname" [(ngModel)]="reservation.lname" placeholder="Your last name" required>
+          </div>
+        </div>
+
+        <!-- Row 2: Email + Phone -->
+        <div class="input-row">
+          <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" [(ngModel)]="reservation.email" placeholder="Your email" required>
+          </div>
+          <div>
+            <label for="tel">Phone Number</label>
+            <input type="tel" id="tel" name="tel" [(ngModel)]="reservation.tel" placeholder="Your phone number" required>
+          </div>
+        </div>
+
+        <!-- Row 3: Date de naissance + CNI -->
+        <div class="input-row">
+          <div>
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" name="dob" [(ngModel)]="reservation.dob" required>
+          </div>
+          <div>
+            <label for="cni">CNI</label>
+            <input type="text" id="cni" name="cni" [(ngModel)]="reservation.cni" placeholder="Your CNI" required>
+          </div>
+        </div>
+
+        <!-- Row 4: Room Number + Room Type -->
+        <div class="input-row">
+          <div>
+            <label for="roomNumber">Room Number</label>
+            <input type="text" id="roomNumber" name="roomNumber" [(ngModel)]="reservation.roomNumber" readonly>
+          </div>
+          <div>
+            <label for="roomType">Room Type</label>
+            <input type="text" id="roomType" name="roomType" [(ngModel)]="reservation.roomType" readonly>
+          </div>
+        </div>
+
+        <!-- Row 5: Start Date + End Date -->
+        <div class="input-row">
+          <div>
+            <label for="startDate">Start Date</label>
+            <input type="date" id="startDate" name="startDate" [(ngModel)]="reservation.startDate" required>
+          </div>
+          <div>
+            <label for="endDate">End Date</label>
+            <input type="date" id="endDate" name="endDate" [(ngModel)]="reservation.endDate" required>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Confirm Reservation</button>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+

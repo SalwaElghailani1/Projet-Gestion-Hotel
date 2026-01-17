@@ -1,0 +1,59 @@
+/* src/app/admin/edit-user/edit-user.component.css */
+.edit-user-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  background: #f9f7f3;
+  min-height: 100vh;
+}
+
+/* Reutilisez les styles de add-user.component.css */
+.form-header {
+  background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.header-icon {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #2196F3, #03A9F4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.header-icon mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  color: #fff;
+}
+
+.header-text h1 {
+  margin: 0 0 10px;
+  font-size: 32px;
+  font-weight: 700;
+  color: #c9a96e;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.header-text p {
+  margin: 0;
+  color: #aaa;
+  font-size: 16px;
+  font-weight: 300;
+}
+
+/* Le reste du CSS est identique à add-user.component.css */

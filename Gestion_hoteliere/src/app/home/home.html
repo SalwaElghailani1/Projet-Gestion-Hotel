@@ -1,0 +1,475 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- Dans index.html -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<header [class.scrolled]="isScrolled">
+  <div class="container header-container">
+    <a href="#" class="logo">ROYELLAS<span>HOTEL</span></a>
+    <nav>
+      <ul>
+        <li><a (click)="scrollToSection('home')" style="cursor: pointer">Home</a></li>
+        <li><a (click)="scrollToSection('rooms')" style="cursor: pointer">Rooms & Suites</a></li>
+        <li><a (click)="scrollToSection('amenities')" style="cursor: pointer">Amenities</a></li>
+        <li><a (click)="scrollToSection('dining')" style="cursor: pointer">Dining</a></li>
+        <li><a (click)="scrollToSection('contact')" style="cursor: pointer">Contact</a></li>
+      </ul>
+    </nav>
+<button class="book-btn"  routerLink="/login">Se Connecter</button>
+  </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-subtitle">THE BEST LUXURY HOTEL</div>
+    <h1 class="hero-title">IN <span>CALIFORNIA</span></h1>
+    <div class="hotel-name">ROYELLAS ROOMS & SUITES</div>
+    <p style="font-size: 18px; max-width: 600px; margin: 0 auto; color: #ddd;">Experience unparalleled luxury and comfort in the heart of California. Our five-star accommodations offer breathtaking views and world-class amenities.</p>
+    <div class="hero-btns">
+      <a (click)="scrollToSection('rooms')" class="btn btn-primary" style="cursor: pointer">VIEW ROOMS & SUITES</a>
+      <a (click)="scrollToSection('contact')" class="btn btn-secondary" style="cursor: pointer">CONTACT US</a>
+    </div>
+  </div>
+</section>
+<!-- Luxury Amenities Section -->
+<section class="luxury-amenities" id="amenities">
+  <div class="container">
+    <!-- Section Header -->
+    <div class="amenities-header">
+      <h2 class="section-subtitle">Experience The Difference</h2>
+      <h1 class="section-main-title">Luxury Amenities</h1>
+      <div class="section-divider">
+        <div class="divider-line"></div>
+        <div class="divider-icon">
+          <i class="fas fa-star"></i>
+        </div>
+        <div class="divider-line"></div>
+      </div>
+      <p class="section-intro">Indulge in unparalleled luxury with our world-class amenities designed to provide an exceptional experience for every guest.</p>
+    </div>
+
+    <!-- Amenities Grid -->
+    <div class="amenities-grid">
+
+      <!-- Infinity Pool -->
+      <div class="amenity-card">
+        <div class="amenity-image">
+          <img src="https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+               alt="Infinity Pool"
+               class="amenity-img">
+          <div class="amenity-overlay">
+            <div class="amenity-number">01</div>
+            <div class="amenity-icon">
+             <i class="fas fa-swimming-pool"></i>
+            </div>
+          </div>
+        </div>
+        <div class="amenity-content">
+          <h3 class="amenity-title">Infinity Pool <span class="amenity-badge">Most Popular</span></h3>
+          <p class="amenity-description">Enjoy our stunning rooftop infinity pool with panoramic views of the California coastline. Heated year-round with luxurious cabanas and poolside service.</p>
+          <ul class="amenity-features">
+            <li><i class="fas fa-check-circle"></i> Heated year-round</li>
+            <li><i class="fas fa-check-circle"></i> Private cabanas</li>
+            <li><i class="fas fa-check-circle"></i> Poolside bar & dining</li>
+          </ul>
+          <div class="amenity-cta">
+            <a href="#" class="amenity-link">
+              <span>Discover More</span>
+              <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spa & Wellness -->
+      <div class="amenity-card">
+        <div class="amenity-image">
+          <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+               alt="Spa & Wellness"
+               class="amenity-img">
+          <div class="amenity-overlay">
+            <div class="amenity-number">02</div>
+            <div class="amenity-icon">
+              <i class="fas fa-spa"></i>
+            </div>
+          </div>
+        </div>
+        <div class="amenity-content">
+          <h3 class="amenity-title">Spa & Wellness</h3>
+          <p class="amenity-description">Relax and rejuvenate at our world-class spa featuring premium treatments, expert therapists, and state-of-the-art wellness facilities.</p>
+          <ul class="amenity-features">
+            <li><i class="fas fa-check-circle"></i> Massage therapies</li>
+            <li><i class="fas fa-check-circle"></i> Steam & sauna rooms</li>
+            <li><i class="fas fa-check-circle"></i> Fitness center</li>
+          </ul>
+          <div class="amenity-cta">
+            <a href="#" class="amenity-link">
+              <span>View Treatments</span>
+              <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fine Dining -->
+      <div class="amenity-card">
+        <div class="amenity-image">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+               alt="Fine Dining"
+               class="amenity-img">
+          <div class="amenity-overlay">
+            <div class="amenity-number">03</div>
+            <div class="amenity-icon">
+              <i class="fas fa-utensils"></i>
+            </div>
+          </div>
+        </div>
+        <div class="amenity-content">
+          <h3 class="amenity-title">Fine Dining <span class="amenity-badge award">Award Winning</span></h3>
+          <p class="amenity-description">Savor exquisite cuisine at our Michelin-starred restaurants with expert sommelier service and breathtaking ocean views.</p>
+          <ul class="amenity-features">
+            <li><i class="fas fa-check-circle"></i> Michelin-starred chefs</li>
+            <li><i class="fas fa-check-circle"></i> Wine pairing menus</li>
+            <li><i class="fas fa-check-circle"></i> Ocean view terrace</li>
+          </ul>
+          <div class="amenity-cta">
+            <a href="#" class="amenity-link">
+              <span>Explore Menus</span>
+              <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 24/7 Concierge -->
+      <div class="amenity-card">
+        <div class="amenity-image">
+          <img src="https://images.unsplash.com/photo-1581985673473-0784a7a44e39?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+               alt="24/7 Concierge"
+               class="amenity-img">
+          <div class="amenity-overlay">
+            <div class="amenity-number">04</div>
+            <div class="amenity-icon">
+              <i class="fas fa-concierge-bell"></i>
+            </div>
+          </div>
+        </div>
+        <div class="amenity-content">
+          <h3 class="amenity-title">24/7 Concierge</h3>
+          <p class="amenity-description">Our dedicated concierge team is available around the clock to arrange everything from restaurant reservations to exclusive local experiences.</p>
+          <ul class="amenity-features">
+            <li><i class="fas fa-check-circle"></i> Personalized service</li>
+            <li><i class="fas fa-check-circle"></i> Event planning</li>
+            <li><i class="fas fa-check-circle"></i> Transportation</li>
+          </ul>
+          <div class="amenity-cta">
+            <a href="#" class="amenity-link">
+              <span>Learn More</span>
+              <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fitness Center -->
+      <div class="amenity-card">
+        <div class="amenity-image">
+          <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+               alt="Fitness Center"
+               class="amenity-img">
+          <div class="amenity-overlay">
+            <div class="amenity-number">05</div>
+            <div class="amenity-icon">
+              <i class="fas fa-dumbbell"></i>
+            </div>
+          </div>
+        </div>
+        <div class="amenity-content">
+          <h3 class="amenity-title">Fitness Center</h3>
+          <p class="amenity-description">Stay active in our state-of-the-art fitness center featuring premium equipment, personal trainers, and yoga studios with ocean views.</p>
+          <ul class="amenity-features">
+            <li><i class="fas fa-check-circle"></i> Personal trainers</li>
+            <li><i class="fas fa-check-circle"></i> Yoga & Pilates</li>
+            <li><i class="fas fa-check-circle"></i> Ocean view studios</li>
+          </ul>
+          <div class="amenity-cta">
+            <a href="#" class="amenity-link">
+              <span>View Facilities</span>
+              <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Valet Service -->
+      <div class="amenity-card">
+        <div class="amenity-image">
+          <img src="https://images.unsplash.com/photo-1549399542-7e3f8b79c341?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+               alt="Valet Service"
+               class="amenity-img">
+          <div class="amenity-overlay">
+            <div class="amenity-number">06</div>
+            <div class="amenity-icon">
+              <i class="fas fa-car"></i>
+            </div>
+          </div>
+        </div>
+        <div class="amenity-content">
+          <h3 class="amenity-title">Valet Service <span class="amenity-badge complimentary">Complimentary</span></h3>
+          <p class="amenity-description">Arrive in style with our complimentary valet service. We also offer luxury car rentals and chauffeur services for exploring California.</p>
+          <ul class="amenity-features">
+            <li><i class="fas fa-check-circle"></i> Complimentary valet</li>
+            <li><i class="fas fa-check-circle"></i> Car rentals</li>
+            <li><i class="fas fa-check-circle"></i> Chauffeur service</li>
+          </ul>
+          <div class="amenity-cta">
+            <a href="#" class="amenity-link">
+              <span>View Services</span>
+              <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CTA Section -->
+    <div class="amenities-cta">
+      <div class="cta-content">
+        <h3 class="cta-title">Ready to Experience Luxury?</h3>
+        <p class="cta-text">Book your stay today and enjoy all our premium amenities</p>
+        <div class="cta-buttons">
+          <button class="btn btn-gold" (click)="openBookingModal()">
+            <i class="fas fa-calendar-check"></i> Book Now
+          </button>
+          <button class="btn btn-outline" (click)="contactUs()">
+            <i class="fas fa-phone-alt"></i> Contact Us
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+<!-- Rooms Section -->
+<section class="rooms" id="rooms">
+  <div class="container">
+    <h2 class="section-title">Rooms & Suites</h2>
+    <div class="rooms-grid">
+
+      <!-- Deluxe Room -->
+      <div class="room-card"
+           (mouseenter)="onRoomHover(1, true)"
+           (mouseleave)="onRoomHover(1, false)">
+        <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
+             alt="Deluxe Room"
+             class="room-img">
+        <div class="room-content">
+          <h3 class="room-title">Deluxe Room</h3>
+          <div class="room-price">$499 / night</div>
+          <p class="room-desc">Spacious room with king-size bed, panoramic ocean view, and luxury amenities.</p>
+          <div class="room-features">
+            <span class="room-feature"><i class="fas fa-bed"></i> King Bed</span>
+            <span class="room-feature"><i class="fas fa-ruler-combined"></i> 45 m²</span>
+            <span class="room-feature"><i class="fas fa-user-friends"></i> 2 Guests</span>
+          </div>
+          <a (click)="openBookingModal()" class="room-link" style="cursor: pointer">
+            VIEW DETAILS <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Executive Suite -->
+      <div class="room-card"
+           (mouseenter)="onRoomHover(2, true)"
+           (mouseleave)="onRoomHover(2, false)">
+        <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
+             alt="Executive Suite"
+             class="room-img">
+        <div class="room-content">
+          <h3 class="room-title">Executive Suite</h3>
+          <div class="room-price">$799 / night</div>
+          <p class="room-desc">Luxurious suite with separate living area, private balcony, and butler service.</p>
+          <div class="room-features">
+            <span class="room-feature"><i class="fas fa-bed"></i> King Bed</span>
+            <span class="room-feature"><i class="fas fa-ruler-combined"></i> 65 m²</span>
+            <span class="room-feature"><i class="fas fa-user-friends"></i> 3 Guests</span>
+          </div>
+          <a (click)="openBookingModal()" class="room-link" style="cursor: pointer">
+            VIEW DETAILS <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Presidential Suite -->
+      <div class="room-card"
+           (mouseenter)="onRoomHover(3, true)"
+           (mouseleave)="onRoomHover(3, false)">
+        <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
+             alt="Presidential Suite"
+             class="room-img">
+        <div class="room-content">
+          <h3 class="room-title">Presidential Suite</h3>
+          <div class="room-price">$1,499 / night</div>
+          <p class="room-desc">The ultimate luxury experience with private terrace, jacuzzi, and 24/7 concierge.</p>
+          <div class="room-features">
+            <span class="room-feature"><i class="fas fa-bed"></i> King Bed</span>
+            <span class="room-feature"><i class="fas fa-ruler-combined"></i> 120 m²</span>
+            <span class="room-feature"><i class="fas fa-user-friends"></i> 4 Guests</span>
+          </div>
+          <a (click)="openBookingModal()" class="room-link" style="cursor: pointer">
+            VIEW DETAILS <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bouton pour voir plus de chambres -->
+    <div class="rooms-cta">
+      <button class="btn btn-primary" (click)="viewAllRooms()">
+        VIEW ALL ROOMS & SUITES
+      </button>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta" id="dining">
+  <div class="container">
+    <h2 class="cta-title">Exquisite Dining Experience</h2>
+    <p class="cta-desc">Indulge in culinary excellence at our award-winning restaurants, featuring locally-sourced ingredients and international flavors curated by our master chefs.</p>
+    <a (click)="openBookingModal()" class="btn btn-primary" style="cursor: pointer">EXPLORE DINING OPTIONS</a>
+  </div>
+  <!-- À la fin de home.component.html, juste avant </div> -->
+
+</section>
+<app-chatbot></app-chatbot>
+<!-- Footer -->
+<footer id="contact">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-about">
+        <a href="#" class="footer-logo">ROYELLAS</a>
+        <p class="footer-desc">The best luxury hotel in California, offering unparalleled comfort, world-class amenities, and exceptional service for the discerning traveler.</p>
+
+        <!-- Carte de localisation -->
+        <div class="location-map">
+          <h4 class="map-title">Our Location</h4>
+          <div class="map-container">
+            <!-- Iframe Google Maps -->
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.7481501882245!2d-118.40182468478333!3d34.06283798060621!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2bc04d6d147ab%3A0xd6c7c379fd081ed1!2sBeverly%20Hills%2C%20Californie%2C%20%C3%89tats-Unis!5e0!3m2!1sfr!2sfr!4v1687876543210!5m2!1sfr!2sfr"
+              width="100%"
+              height="200"
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Royellas Hotel Location in Beverly Hills">
+            </iframe>
+
+            <!-- Alternative avec image statique si iframe ne fonctionne pas -->
+            <div class="map-fallback">
+              <img src="https://maps.googleapis.com/maps/api/staticmap?center=Beverly+Hills,CA&zoom=15&size=300x200&scale=2&markers=color:gold%7Clabel:H%7C34.0628,-118.4007&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
+                   alt="Royellas Hotel Location Map"
+                   class="static-map">
+              <div class="map-overlay" (click)="openGoogleMaps()">
+                <i class="fas fa-map-marked-alt"></i>
+                <span>Open in Google Maps</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="location-actions">
+            <button class="direction-btn" (click)="getDirections()">
+              <i class="fas fa-directions"></i> Get Directions
+            </button>
+            <button class="location-btn" (click)="openGoogleMaps()">
+              <i class="fas fa-external-link-alt"></i> View Larger Map
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-links-container">
+        <h3 class="footer-title">Quick Links</h3>
+        <ul class="footer-links">
+          <li><a (click)="scrollToSection('home')" style="cursor: pointer">Home</a></li>
+          <li><a (click)="scrollToSection('rooms')" style="cursor: pointer">Rooms & Suites</a></li>
+          <li><a (click)="scrollToSection('amenities')" style="cursor: pointer">Amenities</a></li>
+          <li><a (click)="scrollToSection('dining')" style="cursor: pointer">Dining</a></li>
+          <li><a (click)="scrollToSection('contact')" style="cursor: pointer">Contact</a></li>
+        </ul>
+
+        <!-- Informations de contact à côté des liens -->
+        <div class="contact-info-mobile">
+          <h3 class="footer-title">Contact Us</h3>
+          <ul class="contact-info">
+            <li><i class="fas fa-map-marker-alt"></i> <span>123 Luxury Avenue, Beverly Hills, CA 90210</span></li>
+            <li><i class="fas fa-phone"></i> <span>+1 (310) 555-1234</span></li>
+            <li><i class="fas fa-envelope"></i> <span>reservations@royellashotel.com</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-contact">
+        <h3 class="footer-title">Hotel Information</h3>
+        <ul class="hotel-info">
+          <li><i class="fas fa-clock"></i> <span>Check-in: 3:00 PM | Check-out: 11:00 AM</span></li>
+          <li><i class="fas fa-car"></i> <span>Valet Parking Available</span></li>
+          <li><i class="fas fa-wifi"></i> <span>Complimentary High-Speed Wi-Fi</span></li>
+          <li><i class="fas fa-concierge-bell"></i> <span>24/7 Concierge Service</span></li>
+          <li><i class="fas fa-dog"></i> <span>Pet-Friendly Accommodations</span></li>
+        </ul>
+
+        <!-- Newsletter Signup -->
+        <div class="newsletter">
+          <h4 class="newsletter-title">Stay Updated</h4>
+          <p class="newsletter-desc">Subscribe for exclusive offers and updates</p>
+          <div class="newsletter-form">
+            <input type="email" placeholder="Your email address" class="newsletter-input">
+            <button class="newsletter-btn" (click)="subscribeNewsletter()">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Social Media -->
+
+
+
+        <!-- Social Media -->
+        <div class="social-media">
+          <h4 class="social-title">Follow Us</h4>
+          <div class="social-icons">
+            <a href="https://facebook.com" target="_blank" class="social-icon facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://instagram.com" target="_blank" class="social-icon instagram">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://twitter.com" target="_blank" class="social-icon twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+      <a href="https://tripadvisor.com" target="_blank" class="social-icon tripadvisor">
+      <i class="fas fa-star"></i> <!-- Icône étoile -->
+    </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <p>&copy; {{currentYear}} Royellas Rooms & Suites. All rights reserved. | Luxury Hotel in California</p>
+      <div class="footer-legal">
+        <a href="#" (click)="openPrivacyPolicy()">Privacy Policy</a> |
+        <a href="#" (click)="openTerms()">Terms & Conditions</a> |
+        <a href="#" (click)="openAccessibility()">Accessibility Statement</a>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,309 @@
+<!-- src/app/admin/add-user/add-user.html -->
+<div class="add-user-container">
+  <!-- Header -->
+  <div class="form-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <mat-icon>person_add</mat-icon>
+      </div>
+      <div class="header-text">
+        <h1>Ajouter un nouvel utilisateur</h1>
+        <p>Créez un compte pour un nouveau membre du personnel ou client</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <div class="form-card">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
+      
+      <!-- Section 1: Informations de base -->
+      <div class="form-section">
+        <div class="section-header">
+          <mat-icon>info</mat-icon>
+          <h3>Informations personnelles</h3>
+        </div>
+        
+        <!-- Prénom et Nom -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">
+              <mat-icon>person</mat-icon>
+              Prénom *
+            </label>
+            <input 
+              type="text" 
+              id="firstName" 
+              formControlName="firstName"
+              placeholder="Entrez le prénom"
+              class="form-input"
+              [class.error]="hasError('firstName', 'required') && userForm.get('firstName')?.touched">
+            <div class="error-message" *ngIf="hasError('firstName', 'required') && userForm.get('firstName')?.touched">
+              Le prénom est obligatoire
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">
+              <mat-icon>person_outline</mat-icon>
+              Nom *
+            </label>
+            <input 
+              type="text" 
+              id="lastName" 
+              formControlName="lastName"
+              placeholder="Entrez le nom"
+              class="form-input"
+              [class.error]="hasError('lastName', 'required') && userForm.get('lastName')?.touched">
+            <div class="error-message" *ngIf="hasError('lastName', 'required') && userForm.get('lastName')?.touched">
+              Le nom est obligatoire
+            </div>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">
+            <mat-icon>email</mat-icon>
+            Adresse email *
+          </label>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email"
+            placeholder="exemple@royellas.com"
+            class="form-input"
+            [class.error]="(hasError('email', 'required') || hasError('email', 'email')) && userForm.get('email')?.touched">
+          <div class="error-message" *ngIf="hasError('email', 'required') && userForm.get('email')?.touched">
+            L'email est obligatoire
+          </div>
+          <div class="error-message" *ngIf="hasError('email', 'email') && userForm.get('email')?.touched">
+            Format d'email invalide
+          </div>
+        </div>
+
+        <!-- Téléphone (Optionnel) -->
+        <div class="form-group">
+          <label for="phone">
+            <mat-icon>phone</mat-icon>
+            Téléphone
+          </label>
+          <input 
+            type="tel" 
+            id="phone" 
+            formControlName="phone"
+            placeholder="+33 1 23 45 67 89"
+            class="form-input">
+        </div>
+      </div>
+
+      <!-- Section 2: Compte et sécurité -->
+      <div class="form-section">
+        <div class="section-header">
+          <mat-icon>lock</mat-icon>
+          <h3>Paramètres du compte</h3>
+        </div>
+
+        <!-- Mot de passe -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="password">
+              <mat-icon>vpn_key</mat-icon>
+              Mot de passe *
+            </label>
+            <div class="password-container">
+              <input 
+                [type]="showPassword ? 'text' : 'password'" 
+                id="password" 
+                formControlName="password"
+                placeholder="Minimum 8 caractères"
+                class="form-input"
+                [class.error]="hasError('password', 'required') && userForm.get('password')?.touched">
+              <button 
+                type="button" 
+                class="password-toggle"
+                (click)="togglePasswordVisibility()">
+                <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </div>
+            <div class="error-message" *ngIf="hasError('password', 'required') && userForm.get('password')?.touched">
+              Le mot de passe est obligatoire
+            </div>
+            <div class="error-message" *ngIf="hasError('password', 'minlength') && userForm.get('password')?.touched">
+              Minimum 8 caractères requis
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">
+              <mat-icon>lock_reset</mat-icon>
+              Confirmer le mot de passe *
+            </label>
+            <div class="password-container">
+              <input 
+                [type]="showConfirmPassword ? 'text' : 'password'" 
+                id="confirmPassword" 
+                formControlName="confirmPassword"
+                placeholder="Répétez le mot de passe"
+                class="form-input"
+                [class.error]="userForm.hasError('passwordMismatch')">
+              <button 
+                type="button" 
+                class="password-toggle"
+                (click)="toggleConfirmPasswordVisibility()">
+                <mat-icon>{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </div>
+            <div class="error-message" *ngIf="userForm.hasError('passwordMismatch')">
+              Les mots de passe ne correspondent pas
+            </div>
+          </div>
+        </div>
+
+        <!-- Rôle -->
+        <div class="form-group">
+          <label for="role">
+            <mat-icon>badge</mat-icon>
+            Rôle *
+          </label>
+          <select 
+            id="role" 
+            formControlName="role"
+            class="form-select"
+            [class.error]="hasError('role', 'required') && userForm.get('role')?.touched">
+            <option value="" disabled selected>Sélectionnez un rôle</option>
+            <option *ngFor="let role of availableRoles" [value]="role.value">
+              {{ role.label }}
+            </option>
+          </select>
+          <div class="error-message" *ngIf="hasError('role', 'required') && userForm.get('role')?.touched">
+            Le rôle est obligatoire
+          </div>
+        </div>
+
+        <!-- Département (Si rôle = Staff) -->
+        <div class="form-group" *ngIf="userForm.get('role')?.value === 'STAFF'">
+          <label for="department">
+            <mat-icon>business</mat-icon>
+            Département
+          </label>
+          <select 
+            id="department" 
+            formControlName="department"
+            class="form-select">
+            <option value="" selected>Sélectionnez un département</option>
+            <option value="RECEPTION">Réception</option>
+            <option value="HOUSEKEEPING">Ménage</option>
+            <option value="RESTAURANT">Restaurant</option>
+            <option value="MAINTENANCE">Maintenance</option>
+            <option value="MANAGEMENT">Direction</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Section 3: Informations complémentaires -->
+      <div class="form-section">
+        <div class="section-header">
+          <mat-icon>more_horiz</mat-icon>
+          <h3>Informations complémentaires</h3>
+        </div>
+
+        <!-- Date d'embauche (Pour le personnel) -->
+        <div class="form-group" *ngIf="userForm.get('role')?.value === 'STAFF' || userForm.get('role')?.value === 'MANAGER'">
+          <label for="hireDate">
+            <mat-icon>event</mat-icon>
+            Date d'embauche
+          </label>
+          <input 
+            type="date" 
+            id="hireDate" 
+            formControlName="hireDate"
+            class="form-input">
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label for="notes">
+            <mat-icon>notes</mat-icon>
+            Notes additionnelles
+          </label>
+          <textarea 
+            id="notes" 
+            formControlName="notes"
+            placeholder="Informations supplémentaires..."
+            rows="3"
+            class="form-textarea"></textarea>
+        </div>
+
+        <!-- Statut -->
+        <div class="form-group">
+          <div class="checkbox-group">
+            <input 
+              type="checkbox" 
+              id="active" 
+              formControlName="active"
+              class="form-checkbox">
+            <label for="active" class="checkbox-label">
+              <mat-icon>check_circle</mat-icon>
+              Compte actif
+              <span class="checkbox-description">L'utilisateur pourra se connecter immédiatement</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button 
+          type="button" 
+          class="btn-cancel"
+          (click)="cancel()"
+          [disabled]="submitting">
+          <mat-icon>arrow_back</mat-icon>
+          Annuler
+        </button>
+
+        <div class="action-buttons">
+          <button 
+            type="button" 
+            class="btn-reset"
+            (click)="resetForm()"
+            [disabled]="submitting">
+            <mat-icon>refresh</mat-icon>
+            Réinitialiser
+          </button>
+
+          <button 
+            type="submit" 
+            class="btn-submit"
+            [disabled]="!userForm.valid || submitting">
+            <div class="submit-content">
+              <mat-icon *ngIf="!submitting">person_add</mat-icon>
+              <mat-spinner *ngIf="submitting" diameter="20"></mat-spinner>
+              <span>{{ submitting ? 'Création en cours...' : 'Créer l\'utilisateur' }}</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Form Status -->
+      <div class="form-status" *ngIf="userForm.valid">
+        <div class="status-message valid">
+          <mat-icon>check_circle</mat-icon>
+          Formulaire valide. Vous pouvez créer l'utilisateur.
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Help Section -->
+  <div class="help-section">
+    <div class="help-card">
+      <mat-icon>help</mat-icon>
+      <h4>Besoin d'aide ?</h4>
+      <p>Les champs marqués d'un * sont obligatoires.</p>
+      <p>Les mots de passe doivent contenir au moins 8 caractères.</p>
+      <p>Un email de confirmation sera envoyé au nouvel utilisateur.</p>
+    </div>
+  </div>
+</div>
