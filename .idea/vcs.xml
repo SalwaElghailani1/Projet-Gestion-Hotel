@@ -6,6 +6,7 @@
     <mapping directory="$PROJECT_DIR$/Configuration-Service" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Discovery-Service" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Gateway-Service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Gestion_hoteliere" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Paiement_Service" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Reservation-Service" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/RoomService" vcs="Git" />
