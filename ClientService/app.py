@@ -1,27 +1,35 @@
 from flask import Flask
 from flask_restx import Api
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from entity.base import Base
-
 from flask_cors import CORS
-
-from entity.Client import Client
-from controller.api import ns  # Routes dyalek
-
-# Connection string corrected for XAMPP MySQL
-DATABASE_URL = "mysql+pymysql://root:@localhost:3306/gestion_client"
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(bind=engine)
-
-# Create tables
-Base.metadata.create_all(bind=engine)
+from controller.api import ns
+from config.eureka_client import start_eureka
 
 app = Flask(__name__)
 
+authorizations = {
+    'Bearer Auth': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'Authorization'
+    }
+}
 
-api = Api(app, version="1.0", title="Client API", description="API gestion des clients")
-api.add_namespace(ns, path='/clients')
+api = Api(
+    app,
+    version="1.0",
+    title="Client API",
+    authorizations=authorizations,
+    security='Bearer Auth'
+)
+
+api.add_namespace(ns, path="/clients")
+
 CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}})
+
+@app.route("/health")
+def health():
+    return "UP", 200
+
 if __name__ == "__main__":
-    app.run(debug=True, port=8088)
+    start_eureka()   # ✅ Eureka هنا
+    app.run(debug=True, host="0.0.0.0", port=8088)

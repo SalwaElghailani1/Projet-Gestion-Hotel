@@ -1,22 +1,24 @@
-from pyeureka.client import EurekaClient
 import threading
+import logging
+from py_eureka_client import eureka_client
 
-# ----------------------------------------
-# Eureka client config
-# ----------------------------------------
-eureka_client = EurekaClient(
-    eureka_server="http://localhost:8761/eureka",
-    app_name="FLASK-RESERVATION",
-    instance_host="localhost",
-    instance_port=8088,
-    health_url="http://localhost:8088/health",
-    home_page_url="http://localhost:8088/",
-    status_page_url="http://localhost:8088/health",
-    log_level="DEBUG"
-)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-# start Eureka client in background thread
+def register_with_eureka():
+    try:
+        eureka_client.init(
+            eureka_server="http://localhost:8761/eureka",
+            app_name="CLIENT-SERVICE",
+            instance_port=8088,
+            instance_host="localhost",
+            renewal_interval_in_secs=30,
+            duration_in_secs=90
+        )
+        logger.info("✅ Registered with Eureka successfully")
+    except Exception as e:
+        logger.error(f"❌ Failed to register with Eureka: {e}")
+
 def start_eureka():
-    eureka_client.start()
-
-threading.Thread(target=start_eureka).start()
+    thread = threading.Thread(target=register_with_eureka, daemon=True)
+    thread.start()
