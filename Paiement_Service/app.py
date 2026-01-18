@@ -6,9 +6,11 @@ from DTO.RequestDtoPaiement import RequestDtoPaiement
 from Service.PaiementService import PaiementService
 from Repository.PaiementRepository import PaiementRepository
 from config.security import require_role
-
+from flask_cors import CORS
 # ================= Flask App =================
 app = Flask(__name__)
+CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}})
 
 # ================= Swagger Security =================
 authorizations = {
