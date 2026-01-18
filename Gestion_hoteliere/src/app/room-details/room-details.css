@@ -258,7 +258,7 @@ margin-top: 15px;
 
 .back-link {
   max-width: 1600px;
-  margin: 9rem auto 1rem;
+  margin: 6rem auto 1rem;
   /* fo9 room-details */
   padding: 0 20px;
 }
@@ -442,3 +442,80 @@ margin-top: 15px;
 }
 
 
+/* Similar rooms section */
+.similar-rooms {
+  margin-top: 80px;
+  padding: 0 40px 60px;
+}
+
+.similar-title {
+  font-size: 1.9rem;
+  font-weight: 600;
+  margin-bottom: 30px;
+  color: #a38750;
+  text-align: center;
+}
+
+/* Grid */
+.similar-rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 25px;
+}
+
+/* Card */
+.similar-room-card {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.similar-room-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+/* Image */
+.similar-room-card img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+}
+
+/* Info */
+.card-info {
+  padding: 15px;
+}
+
+.card-info h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #1a1a1a;
+}
+
+.card-info .price {
+  font-size: 0.95rem;
+  color: #2e7d32;
+  margin-bottom: 8px;
+}
+
+/* Status badge */
+.card-info .status {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.line {
+  border: none;
+  height: 1px;
+  background-color: #ddd;
+  width: 100%;
+  margin: 100px 0;
+}

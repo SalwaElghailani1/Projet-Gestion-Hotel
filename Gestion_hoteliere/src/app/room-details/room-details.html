@@ -147,4 +147,39 @@
   </div>
 </div>
 
+<hr class="line">
+<p></p>
+<!-- Similar Rooms Section -->
+<div class="similar-rooms" *ngIf="!loading && similarRooms.length > 0">
+  <h3 class="similar-title">Similar {{ room.type }} Rooms</h3>
+
+  <div class="similar-rooms-grid">
+    <div
+      class="similar-room-card"
+      *ngFor="let r of similarRooms"
+      (click)="goToRoom(r.id)"
+    >
+      <img
+        [src]="'http://localhost:8093/uploads/' + r.image"
+        [alt]="r.type"
+      />
+
+      <div class="card-info">
+        <h4>{{ r.type }} Room {{ r.numero }}</h4>
+        <p class="price">{{ r.prix }} MAD / night</p>
+        <span
+          class="status"
+          [ngClass]="{
+         'occupied-msg': r.etat === 'Occupée',
+         'maintenance-msg': r.etat === 'Maintenance',
+         'available-msg': r.etat === 'Disponible'
+       }"
+        >
+          {{ r.etat }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
 

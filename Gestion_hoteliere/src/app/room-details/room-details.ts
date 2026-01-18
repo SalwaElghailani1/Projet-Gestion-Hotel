@@ -6,7 +6,7 @@ import { RoomService } from '../services/room.service';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { ReservationService } from '../services/reservation.service';
-import {routes} from '../app.routes';
+import { ChangeDetectorRef } from '@angular/core';
 
 
 @Component({
@@ -34,31 +34,41 @@ export class RoomDetails {
     private roomService: RoomService,
     private authService: AuthService,
     private reservationService: ReservationService,
-    private router: Router
-
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
-    const roomId = +this.route.snapshot.paramMap.get('id')!;
+    this.route.paramMap.subscribe(params => {
+      const roomId = Number(params.get('id'));
 
-    if (!roomId) {
-      this.errorMsg = 'Room ID not found';
-      this.loading = false;
-    } else {
-      this.roomService.getRoomById(roomId).subscribe({
-        next: (data) => {
-          this.room = data;
-          this.loading = false;
+      if (!roomId) {
+        this.errorMsg = 'Room ID not found';
+        this.loading = false;
+        return;
+      }
 
-          // Fill readonly fields in form
-          this.reservation.roomNumber = this.room.numero;
-          this.reservation.roomType = this.room.type;
-        },
-        error: (err) => {
-          console.error(err);
-          this.errorMsg = 'Failed to load room';
-          this.loading = false;
-        }
-      });
-    }
+      this.loadRoom(roomId);
+    });
+  }
+
+
+  loadRoom(roomId: number) {
+    this.loading = true;
+
+    this.roomService.getRoomById(roomId).subscribe({
+      next: (data) => {
+        this.room = data;
+        this.loading = false;
+
+        this.loadSimilarRooms(this.room.type, this.room.id);
+
+        this.reservation.roomNumber = this.room.numero;
+        this.reservation.roomType = this.room.type;
+      },
+      error: () => {
+        this.errorMsg = 'Failed to load room';
+        this.loading = false;
+      }
+    });
   }
 
 
@@ -153,6 +163,26 @@ export class RoomDetails {
         alert('Error updating client profile');
       }
     });
+  }
+
+  similarRooms: any[] = [];
+  loadSimilarRooms(type: string, currentRoomId: number) {
+    this.similarRooms = [];
+
+    this.roomService.getRoomsByType(type).subscribe({
+      next: (rooms: any[]) => {
+        this.similarRooms = rooms.filter(r => r.id !== currentRoomId);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading similar rooms', err);
+      }
+    });
+  }
+
+
+  goToRoom(id: number) {
+    this.router.navigate(['/room', id]);
   }
 
 }
