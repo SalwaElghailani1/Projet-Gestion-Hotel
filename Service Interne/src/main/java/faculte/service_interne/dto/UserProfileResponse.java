@@ -19,6 +19,7 @@ public class UserProfileResponse {
     private String telephone;
     private String adresse;
     private String cin;
+    private LocalDate dateNaissance;
     private MetierRole metierRole;
     private String departement;
     private LocalDate dateEmbauche;

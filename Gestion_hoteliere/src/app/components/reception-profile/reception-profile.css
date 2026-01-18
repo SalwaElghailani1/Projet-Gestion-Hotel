@@ -1432,6 +1432,7 @@ input:checked + .slider:before {
 .rooms-table-container {
   width: 100%;
   padding: 20px;
+  margin-bottom: 50px;
   box-sizing: border-box;
 }
 
@@ -1614,6 +1615,7 @@ input:checked + .slider:before {
   border-collapse: collapse;
   background-color: #ffffff;
   border-radius: 12px;
+  margin-bottom: 50px;
   overflow: hidden;
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -1743,3 +1745,31 @@ input:checked + .slider:before {
   height: 300px !important;
 }
 
+
+.reservations-analytics {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+
+  .chart-card {
+    flex: 1 1 300px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+
+    h3 {
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+      color: #333;
+      text-align: center;
+    }
+
+    canvas {
+      display: block;
+      width: 100% !important;
+      height: 250px !important;
+    }
+  }
+}

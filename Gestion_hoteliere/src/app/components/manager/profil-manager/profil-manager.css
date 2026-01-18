@@ -1217,24 +1217,7 @@ input:checked + .slider:before {
   color: #333;
 }
 
-/* Bar Chart */
-.bar-chart {
-  display: flex;
-  align-items: flex-end;
-  height: 220px;
-  gap: 15px;
-}
 
-.bar {
-  flex: 1;
-  text-align: center;
-}
-
-.bar div {
-  background: #c9a96e;
-  border-radius: 10px 10px 0 0;
-  transition: 0.3s;
-}
 
 .bar span {
   display: block;
@@ -1657,3 +1640,123 @@ td span.status-outwork {
   text-align: center !important;
 }
 
+
+   .bar-chart {
+     display: flex;
+     align-items: flex-end;
+     gap: 16px;
+     height: 220px;
+     padding: 20px;
+     border: 1px solid #ddd; // Pour voir le conteneur
+   background-color: #f9f9f9;
+     position: relative;
+   min-height: 200px;
+   }
+
+.bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 35px;
+  height: 100%;
+  position: relative;
+
+  &:hover {
+    .bar-fill {
+      opacity: 0.8;
+    }
+  }
+}
+
+.bar span {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #555;
+  position: absolute;
+  bottom: -25px;
+  text-align: center;
+  width: 100%;
+}
+
+.bar-fill {
+  width: 100%;
+  background: linear-gradient(180deg, #c9a96e, #735825);
+  min-height: 5px !important; // Toujours visible
+border-radius: 8px 8px 0 0;
+  transition: height 0.4s ease, opacity 0.3s ease;
+
+
+&.empty-bar {
+  background: #e0e0e0 !important;
+  height: 5px !important;
+
+  &::after {
+    content: '0';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: #999;
+  }
+}
+}
+
+.bar-chart::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    linear-gradient(to bottom, transparent 95%, #eee 95%),
+    linear-gradient(to bottom, transparent 90%, #eee 90%),
+    linear-gradient(to bottom, transparent 80%, #eee 80%),
+    linear-gradient(to bottom, transparent 70%, #eee 70%),
+    linear-gradient(to bottom, transparent 60%, #eee 60%),
+    linear-gradient(to bottom, transparent 50%, #eee 50%),
+    linear-gradient(to bottom, transparent 40%, #eee 40%),
+    linear-gradient(to bottom, transparent 30%, #eee 30%),
+    linear-gradient(to bottom, transparent 20%, #eee 20%),
+    linear-gradient(to bottom, transparent 10%, #eee 10%);
+  background-size: 100% 10%;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.bar-value {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-weight: bold;
+  color: #c9a96e;
+  background: white;
+  padding: 2px 4px;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  .bar:hover & {
+    opacity: 1;
+  }
+}
+
+.no-data-message {
+  text-align: center;
+  color: #999;
+  padding: 40px;
+  font-style: italic;
+  font-size: 14px;
+
+  &::before {
+    content: '📊';
+    display: block;
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+}

@@ -69,29 +69,22 @@ public class UserProfileController {
             @ApiResponse(responseCode = "200", description = "Profil mis à jour avec succès"),
             @ApiResponse(responseCode = "404", description = "Profil non trouvé")
     })
-    @PreAuthorize("hasRole('ADMIN') or ((#userId == authentication.principal.claims['userId']) and (" +
-            "authentication.principal.claims['roles'].contains('ADMIN') or " +
-            "authentication.principal.claims['roles'].contains('HOUSEKEEPING') or " +
-            "authentication.principal.claims['roles'].contains('RECEPTIONNISTE') or " +
-            "authentication.principal.claims['roles'].contains('MANAGER') or " +
-            "authentication.principal.claims['roles'].contains('MAINTENANCE') or " +
-            "authentication.principal.claims['roles'].contains('COMPTABLE')))")
-    @PutMapping
-    public ResponseEntity<UserProfileResponse> updateUserProfile(
-            @AuthenticationPrincipal Jwt jwt,
-            @Valid @RequestBody UserProfileRequest request,
-            @RequestParam(required = false) Integer userIdParam) {
 
-        Integer userId;
-        List<String> roles = jwt.getClaim("roles");
-        if (userIdParam != null) {
-            if (!roles.contains("ADMIN")) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
-            userId = userIdParam;
-        } else {
-            userId = ((Long) jwt.getClaim("userId")).intValue();
-        }
+    @PreAuthorize(
+            "(#userId == authentication.principal.claims['userId']) and " +
+                    "(authentication.principal.claims['roles'].contains('ADMIN') or " +
+                    " authentication.principal.claims['roles'].contains('HOUSEKEEPING') or " +
+                    " authentication.principal.claims['roles'].contains('RECEPTIONNISTE') or " +
+                    " authentication.principal.claims['roles'].contains('MANAGER') or " +
+                    " authentication.principal.claims['roles'].contains('MAINTENANCE') or " +
+                    " authentication.principal.claims['roles'].contains('COMPTABLE'))"
+    )
+    @PutMapping("/me")
+    public ResponseEntity<UserProfileResponse> updateMyProfilePartial(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestBody UserProfileRequest request) {
+
+        Integer userId = ((Long) jwt.getClaim("userId")).intValue();
 
         return ResponseEntity.ok(service.updateUserProfile(userId, request));
     }

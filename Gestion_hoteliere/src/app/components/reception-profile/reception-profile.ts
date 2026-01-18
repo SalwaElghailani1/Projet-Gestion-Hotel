@@ -72,10 +72,10 @@ export class ReceptionProfile implements OnInit{
       prenom: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.minLength(6)]],
-      tel: ['', Validators.required],
+      telephone: ['', Validators.required],
       dateNaissance: ['', Validators.required],
-      cne: ['', Validators.required],
-      image: ['']
+      cin: ['', Validators.required],
+      adresse: ['', Validators.required],
     });
 
     this.reportForm = this.fb.group({
@@ -113,8 +113,9 @@ export class ReceptionProfile implements OnInit{
           nom: profile.nom,
           prenom: profile.prenom,
           email: profile.email,
-          tel: profile.tel,
-          cne: profile.cne,
+          telephone: profile.telephone,
+          cin: profile.cin,
+          adresse: profile.adresse,
           dateNaissance: profile.dateNaissance
         });
 
@@ -142,9 +143,10 @@ export class ReceptionProfile implements OnInit{
         nom: this.profileForm.value.nom,
         prenom: this.profileForm.value.prenom,
         email: this.profileForm.value.email,
-        tel: this.profileForm.value.tel,
+        telephone: this.profileForm.value.telephone,
         dateNaissance: this.profileForm.value.dateNaissance,
-        cne: this.profileForm.value.cne
+        cin: this.profileForm.value.cin,
+        adresse: this.profileForm.value.adresse
       };
 
 
@@ -168,13 +170,21 @@ export class ReceptionProfile implements OnInit{
   }
   showSection(section: string): void {
     this.activeSection = section;
+
     if(section === 'rooms' && this.rooms.length) {
       setTimeout(() => {
         this.initStatusChart();
         this.initPriceChart();
       }, 0);
     }
+
+    if(section === 'reservations' && this.reservations.length) {
+      setTimeout(() => {
+        this.initReservationCharts();
+      }, 0);
+    }
   }
+
 
 
 
@@ -250,12 +260,17 @@ export class ReceptionProfile implements OnInit{
   loadReservations() {
     this.reservationService.getAllReservations().subscribe({
       next: (data: any) => {
-        console.log('Reservations enrichies:', data);
         this.reservations = data.reservations || [];
+
+        // Si la section est active, afficher les charts
+        if(this.activeSection === 'reservations') {
+          setTimeout(() => this.initReservationCharts(), 0);
+        }
       },
       error: (err) => console.error('Erreur fetching reservations', err)
     });
   }
+
 
   confirmReservation(res: any) {
     this.reservationService.updateStatus(res.idReservation, 'confirmed')
@@ -367,6 +382,71 @@ export class ReceptionProfile implements OnInit{
       type: 'bar',
       data: {
         labels,
+        datasets: [{
+          label: 'Average Price (MAD)',
+          data: avgPrices,
+          backgroundColor: '#b89a5e'
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  }
+
+
+  initReservationCharts() {
+    if (!this.reservations || this.reservations.length === 0) return;
+
+    // 1️⃣ Reservations count by room type
+    const typeCount: Record<string, number> = {};
+    this.reservations.forEach(res => {
+      const type = res.chambre?.type || res.typeChambre || 'Unknown';
+      typeCount[type] = (typeCount[type] || 0) + 1;
+    });
+
+    const typeLabels = Object.keys(typeCount);
+    const typeData = typeLabels.map(type => typeCount[type]);
+    const totalReservations = typeData.reduce((a, b) => a + b, 0);
+    const typePercentages = typeData.map(count => (count / totalReservations * 100).toFixed(1));
+
+    new Chart('reservationTypeChart', {
+      type: 'doughnut',
+      data: {
+        labels: typeLabels.map((t, i) => `${t} (${typePercentages[i]}%)`),
+        datasets: [{
+          data: typeData,
+          backgroundColor: ['#4caf50', '#ff9800', '#2196f3', '#f44336', '#9c27b0'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+
+    // 2️⃣ Average price by room type
+    const pricesByType: Record<string, number[]> = {};
+    this.reservations.forEach(res => {
+      const type = res.chambre?.type || res.typeChambre || 'Unknown';
+      if (!pricesByType[type]) pricesByType[type] = [];
+      pricesByType[type].push(res.totalPrix);
+    });
+
+    const priceLabels = Object.keys(pricesByType);
+    const avgPrices = priceLabels.map(type => {
+      const prices = pricesByType[type];
+      return prices.reduce((a, b) => a + b, 0) / prices.length;
+    });
+
+    new Chart('reservationPriceChart', {
+      type: 'bar',
+      data: {
+        labels: priceLabels,
         datasets: [{
           label: 'Average Price (MAD)',
           data: avgPrices,

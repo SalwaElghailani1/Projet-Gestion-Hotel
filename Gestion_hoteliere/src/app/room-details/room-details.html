@@ -39,11 +39,14 @@
 
   <!-- Info -->
   <div class="room-info">
-    <h2 class="room-number">Room {{ room.numero }}</h2>
-    <h3 class="room-type"> For {{ room.type }} Guests</h3>
+    <h2 class="room-number"> {{ room.type }} Room {{ room.numero }}</h2>
     <p class="room-desc">{{ room.description }}</p>
+    <p class="hotel-description">
+      Discover the epitome of luxury at ROYELLAS Hotel. Each room and suite is thoughtfully designed to blend elegance with comfort, featuring breathtaking views, plush bedding, and world-class amenities. From intimate retreats to expansive suites, every space promises an unforgettable stay tailored for discerning travelers. Experience the art of hospitality, where every detail is crafted to delight and every moment is designed to inspire.
+    </p>
     <p class="room-price"><span>{{ room.prix }} MAD/night</span></p>
-    <p class="room-bed"><i class="fas fa-bed"></i> Bed: {{ room.lit_long }}x{{ room.lit_large }}</p>
+    <p class="room-bed"><i class="fas fa-bed"></i> {{ room.type }} </p>
+    <p class="room-bed"><i class="fas fa-ruler-combined"></i> {{ room.lit_long }}x{{ room.lit_large }}</p>
 
     <!-- Status badge -->
     <p class="room-status-msg"

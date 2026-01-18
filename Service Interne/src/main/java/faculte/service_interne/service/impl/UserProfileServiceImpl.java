@@ -50,19 +50,18 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public UserProfileResponse updateUserProfile(Integer userId, UserProfileRequest request) {
-
         UserProfile profile = repository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Profil interne non trouvé."));
 
-        profile.setTelephone(request.getTelephone());
-        profile.setAdresse(request.getAdresse());
-        profile.setCin(request.getCin());
-        profile.setDepartement(request.getDepartement());
-        profile.setDateEmbauche(request.getDateEmbauche());
-        profile.setSuperviseurId(request.getSuperviseurId());
-        profile.setUpdatedAt(LocalDateTime.now());
+        // Update only if value is not null
+        if(request.getTelephone() != null) profile.setTelephone(request.getTelephone());
+        if(request.getAdresse() != null) profile.setAdresse(request.getAdresse());
+        if(request.getCin() != null) profile.setCin(request.getCin());
+        if(request.getDateNaissance() != null) profile.setDateNaissance(request.getDateNaissance());
 
+        profile.setUpdatedAt(LocalDateTime.now());
         repository.save(profile);
+
         return mapper.EntitytoResponse(profile);
     }
 

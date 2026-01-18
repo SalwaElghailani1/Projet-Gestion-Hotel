@@ -18,6 +18,7 @@ public class UserProfileMapper {
         profile.setEmail(request.getEmail());
         profile.setAdresse(request.getAdresse());
         profile.setCin(request.getCin());
+        profile.setDateNaissance(request.getDateNaissance());
         profile.setMetierRole(request.getMetierRole());
         profile.setDepartement(request.getDepartement());
         profile.setDateEmbauche(request.getDateEmbauche());
@@ -38,6 +39,7 @@ public class UserProfileMapper {
         response.setTelephone(profile.getTelephone());
         response.setAdresse(profile.getAdresse());
         response.setCin(profile.getCin());
+        response.setDateNaissance(profile.getDateNaissance());
         response.setMetierRole(profile.getMetierRole());
         response.setDepartement(profile.getDepartement());
         response.setDateEmbauche(profile.getDateEmbauche());

@@ -41,7 +41,7 @@ export class UserProfileService {
 
   updateMyProfile(data: any): Observable<any> {
     return this.http.put<any>(
-      `${this.apiUrl}`,
+      `${this.apiUrl}/me`,
       data,
       this.getHeaders()
     );
@@ -77,24 +77,4 @@ export class UserProfileService {
     this.router.navigate(['/login']);     // ✅ redirect
   }
 
-
-  changeProfileStatus(
-    userId: number,
-    status: string,
-    adminId: number,
-    rejectionReason?: string
-  ): Observable<any> {
-
-    let url = `${this.apiUrl}/${userId}/status?status=${status}&adminId=${adminId}`;
-
-    if (rejectionReason) {
-      url += `&rejectionReason=${rejectionReason}`;
-    }
-
-    return this.http.put<any>(
-      url,
-      {},
-      this.getHeaders()
-    );
-  }
 }

@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
+import {DecimalPipe, JsonPipe, NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {RoomService} from '../../../services/room.service';
 import {UserProfileService} from '../../../services/user-profile.service';
 import {UserResponseDTO, UserService} from '../../../services/user.service';
 import {AuthService} from '../../../services/auth.service';
+import {ReservationService} from '../../../services/reservation.service';
 
 @Component({
   selector: 'app-profil-manager',
@@ -16,10 +17,12 @@ import {AuthService} from '../../../services/auth.service';
     ReactiveFormsModule,
 
     HttpClientModule,
-    NgClass
+    NgClass,
+    DecimalPipe,
+    JsonPipe
   ],
   templateUrl: './profil-manager.html',
-  styleUrl: './profil-manager.css',
+  styleUrls: ['./profil-manager.css'],
 })
 export class ProfilManager implements OnInit{
   rooms: any[] = [];
@@ -59,21 +62,25 @@ export class ProfilManager implements OnInit{
   originalFormData: any;
   imageFile: File | null = null;
 
+  reservations: any[] = [];
+  reservationsByMonth: { month: string, count: number }[] = [];
+
   constructor(
     private fb: FormBuilder,
     private roomService: RoomService,
     private userProfileService: UserProfileService,
     private authService: AuthService,
+    private reservationService: ReservationService
   ) {
     this.profileForm = this.fb.group({
       nom: ['', Validators.required],
       prenom: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.minLength(6)]],
-      tel: ['', Validators.required],
+      telephone: ['', Validators.required],
       dateNaissance: ['', Validators.required],
-      cne: ['', Validators.required],
-      image: ['']
+      cin: ['', Validators.required],
+      adresse: ['', Validators.required],
     });
 
     this.reportForm = this.fb.group({
@@ -86,6 +93,14 @@ export class ProfilManager implements OnInit{
     this.loadMyProfile();
     this.loadRooms();
     this.fetchUsers();
+    this.loadReservations();
+    // Initialisez avec des données de test pour vérifier le graphique
+    setTimeout(() => {
+      if (this.reservationsByMonth.length === 0) {
+        console.log('No reservations data, initializing with test data');
+        this.initializeWithTestData();
+      }
+    }, 2000);
   }
 
   loadMyProfile() {
@@ -99,8 +114,9 @@ export class ProfilManager implements OnInit{
           nom: profile.nom,
           prenom: profile.prenom,
           email: profile.email,
-          tel: profile.tel,
-          cne: profile.cne,
+          telephone: profile.telephone,
+          cin: profile.cin,
+          adresse: profile.adresse,
           dateNaissance: profile.dateNaissance
         });
 
@@ -128,11 +144,11 @@ export class ProfilManager implements OnInit{
         nom: this.profileForm.value.nom,
         prenom: this.profileForm.value.prenom,
         email: this.profileForm.value.email,
-        tel: this.profileForm.value.tel,
+        telephone: this.profileForm.value.telephone,
         dateNaissance: this.profileForm.value.dateNaissance,
-        cne: this.profileForm.value.cne
+        cin: this.profileForm.value.cin,
+        adresse: this.profileForm.value.adresse
       };
-
 
       this.userProfileService.updateMyProfile(updateData).subscribe({
         next: updatedProfile => {
@@ -330,4 +346,106 @@ export class ProfilManager implements OnInit{
     });
   }
 
+  totalIncome: number = 0;
+  loadReservations() {
+    this.reservationService.getAllReservations().subscribe({
+      next: (data: any) => {
+        console.log('Reservations enrichies:', data);
+        this.reservations = data.reservations || [];
+        this.calculateReservationsByMonth();
+        this.totalIncome = this.reservations.reduce((sum, res) => {
+          return sum + (res.totalPrix ?? 0);
+        }, 0);
+
+        console.log('Total Income:', this.totalIncome);
+      },
+      error: (err) => console.error('Erreur fetching reservations', err)
+    });
+  }
+
+  // Dans la classe ProfilManager
+  getBarHeight(count: number): number {
+    if (!this.reservationsByMonth || this.reservationsByMonth.length === 0) {
+      return 0;
+    }
+
+    // Trouver le maximum pour l'échelle
+    const maxCount = Math.max(...this.reservationsByMonth.map(r => r.count));
+
+    if (maxCount === 0) {
+      return 5; // Hauteur minimale pour voir la barre
+    }
+
+    // Échelle de 5% à 100%
+    return Math.max(5, (count / maxCount) * 100);
+  }
+
+// Et modifiez calculateReservationsByMonth pour mieux déboguer
+  calculateReservationsByMonth() {
+    console.log('=== CALCUL DES RÉSERVATIONS PAR MOIS ===');
+    console.log('Données brutes:', this.reservations);
+
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+
+    const counts = new Array(12).fill(0);
+
+    // Si pas de données, initialiser à 0
+    if (!this.reservations || this.reservations.length === 0) {
+      console.log('Aucune réservation trouvée');
+      this.reservationsByMonth = months.map((m, i) => ({
+        month: m,
+        count: 0
+      }));
+      return;
+    }
+
+    // Comptage des réservations par mois
+    this.reservations.forEach((res, index) => {
+      console.log(`Réservation ${index + 1}:`, res);
+
+      // Essayez différents champs possibles
+      const dateField = res.dateDebut || res.startDate || res.dateReservation ||
+        res.createdAt || res.date || res.reservationDate;
+
+      if (dateField) {
+        const date = new Date(dateField);
+        if (!isNaN(date.getTime())) {
+          const monthIndex = date.getMonth(); // 0 = Janvier, 11 = Décembre
+          counts[monthIndex]++;
+          console.log(`✓ Ajoutée au mois ${monthIndex} (${months[monthIndex]})`);
+        } else {
+          console.log(`✗ Date invalide: ${dateField}`);
+        }
+      } else {
+        console.log(`✗ Pas de champ de date trouvé`);
+      }
+    });
+
+    console.log('Comptes par mois:', counts);
+
+    this.reservationsByMonth = months.map((monthName, monthIndex) => {
+      const count = counts[monthIndex] || 0;
+      console.log(`${monthName}: ${count} réservations`);
+      return {
+        month: monthName,
+        count: count
+      };
+    });
+
+    console.log('Résultat final:', this.reservationsByMonth);
+  }
+
+  initializeWithTestData() {
+    // Données de test
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    this.reservationsByMonth = months.map((month, index) => ({
+      month: month,
+      count: Math.floor(Math.random() * 10) // Valeurs aléatoires pour test
+    }));
+    console.log('Test data initialized:', this.reservationsByMonth);
+  }
 }

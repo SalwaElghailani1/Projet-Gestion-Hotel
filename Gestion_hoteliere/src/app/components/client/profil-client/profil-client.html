@@ -86,8 +86,8 @@
     <!-- Profile Section -->
     <div class="content-section profile-edit" *ngIf="activeSection === 'profile'">
       <div class="page-header">
-        <h1><i class="fas fa-user-edit"></i> Modifier le Profil</h1>
-        <p class="page-subtitle">Mettez à jour vos informations personnelles</p>
+        <h1><i class="fas fa-user-edit"></i> Edit Profile</h1>
+        <p class="page-subtitle">Update your personal information</p>
       </div>
 
       <div *ngIf="reservationMessage" class="reservation-alert">
@@ -181,10 +181,10 @@
 
           <div class="form-actions">
             <button type="button" class="btn-secondary" (click)="cancelEdit()">
-              <i class="fas fa-times"></i> Annuler
+              <i class="fas fa-times"></i> Cancel
             </button>
             <button type="submit" class="btn-primary" [disabled]="!profileForm.valid">
-              <i class="fas fa-save"></i> Enregistrer les modifications
+              <i class="fas fa-save"></i> Save Changes
             </button>
           </div>
         </div>
