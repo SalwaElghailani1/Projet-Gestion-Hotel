@@ -1,9 +1,4 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-      crossorigin="anonymous" referrerpolicy="no-referrer" />
-<!-- Dans index.html -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <!-- Navigation Bar -->
 <nav class="navbar">
@@ -12,53 +7,218 @@
       <i class="fas fa-crown"></i>
       <span>ROYELLAS <span class="hotel-name">HOTEL</span></span>
     </div>
-
     <ul class="nav-menu">
       <li *ngFor="let item of navItems">
-        <a
-          [routerLink]="item.route"
-          routerLinkActive="active"
-        >
+        <a [routerLink]="item.route" routerLinkActive="active">
           {{ item.name }}
         </a>
       </li>
-
     </ul>
   </div>
 </nav>
 
-<div>
-  <h2>Payment Here ... Please Wait </h2>
-</div>
-<div class="reservations-container">
+<div class="page-container">
+  <h2>Payment Management</h2>
 
-  <table class="reservations-table">
-    <thead>
-    <tr>
-      <th>Room</th>
-      <th>Room type</th>
-      <th>Date Begin</th>
-      <th>Date End</th>
-      <th>Statut Reservation</th>
-      <th>Total Price</th>
-      <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let res of clientReservations">
-      <td>{{ res.chambre?.numero || res.chambre_id }}</td>
-      <td>{{ res.chambre?.type || res.chambre_id }}</td>
-      <td>{{ res.dateDebut | date:'dd/MM/yyyy' }}</td>
-      <td>{{ res.dateFin | date:'dd/MM/yyyy' }}</td>
-      <td>
-        {{ res.statut }}
-      </td>
-      <td>{{ res.totalPrix | number:'1.2-2' }} MAD</td>
-      <td>
-        <button class="btn-pay">Payer</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <div class="reservations-container">
+    <table class="reservations-table">
+      <thead>
+      <tr>
+        <th><i class="fas fa-user"></i> Client</th>
+        <th><i class="fas fa-door-closed"></i> Room</th>
+        <th><i class="fas fa-bed"></i> Type</th>
+        <th><i class="fas fa-calendar-start"></i> Start Date</th>
+        <th><i class="fas fa-calendar-end"></i> End Date</th>
+        <th><i class="fas fa-moon"></i> Nights</th>
+        <th><i class="fas fa-info-circle"></i> Status</th>
+        <th><i class="fas fa-money-bill-wave"></i> Total</th>
+        <th><i class="fas fa-cog"></i> Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let res of clientReservations">
+        <td>{{ clientName }}</td>
+        <td>{{ res.chambre?.numero || res.chambre_id }}</td>
+        <td>{{ res.chambre?.type || res.typeChambre }}</td>
+        <td>{{ res.dateDebut | date:'dd/MM/yyyy' }}</td>
+        <td>{{ res.dateFin | date:'dd/MM/yyyy' }}</td>
+        <td>{{ calculateNights(res.dateDebut, res.dateFin) }}</td>
+        <td>
+            <span [class]="'badge badge-'+getStatusClass(res.statut)">
+              {{ res.statut }}
+            </span>
+        </td>
+        <td class="price-cell">{{ res.totalPrix | number:'1.2-2' }} MAD</td>
+        <td>
+          <div class="action-buttons">
+            <button class="btn-pay"
+                    (click)="openPaymentModal(res)"
+                    [disabled]="isReservationPaid(res)">
+              <i class="fas fa-credit-card"></i>
+              {{ isReservationPaid(res) ? 'Paid' : 'Pay' }}
+            </button>
+
+            <button class="btn-invoice"
+                    *ngIf="isReservationPaid(res)"
+                    (click)="downloadReservationInvoice(res)">
+              <i class="fas fa-file-invoice"></i> Invoice
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="showModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i class="fas fa-credit-card"></i> Payment - Reservation #{{ selectedReservation?.idReservation }}</h3>
+      <button class="close-btn" (click)="closeModal()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="modal-body">
+      <!-- ✅ Success message -->
+      <div *ngIf="paymentSuccess" class="success-message">
+        <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+        <h3>Payment Successful!</h3>
+        <p>Your payment has been successfully processed. You can now download your invoice.</p>
+        <div class="invoice-actions">
+          <button class="btn-download" (click)="downloadInvoice()">
+            <i class="fas fa-file-pdf"></i> Download Invoice
+          </button>
+          <button class="btn-close" (click)="closeModal()">
+            <i class="fas fa-check"></i> Finish
+          </button>
+        </div>
+      </div>
+
+      <!-- ✅ Payment form -->
+      <div *ngIf="!paymentSuccess">
+        <!-- Reservation information -->
+        <div class="info-section">
+          <h4><i class="fas fa-info-circle"></i> Reservation Details</h4>
+          <div class="info-grid">
+            <div>
+              <strong><i class="fas fa-user"></i> Client:</strong>
+              {{ clientName }}
+            </div>
+            <div><strong><i class="fas fa-door-closed"></i> Room:</strong> {{ selectedReservation?.chambre?.numero }}</div>
+            <div><strong><i class="fas fa-calendar"></i> Period:</strong> {{ selectedReservation?.dateDebut | date:'dd/MM/yyyy' }} - {{ selectedReservation?.dateFin | date:'dd/MM/yyyy' }}</div>
+            <div><strong><i class="fas fa-moon"></i> Nights:</strong> {{ calculateNights(selectedReservation?.dateDebut, selectedReservation?.dateFin) }}</div>
+            <div><strong><i class="fas fa-money-bill-wave"></i> Total:</strong> {{ selectedReservation?.totalPrix | number:'1.2-2' }} MAD</div>
+          </div>
+        </div>
+
+        <!-- Payment method -->
+        <div class="payment-section">
+          <h4><i class="fas fa-credit-card"></i> Payment Method</h4>
+          <div class="payment-methods">
+            <label class="payment-option" [class.selected]="paymentMethod === 'CARD'">
+              <input type="radio" name="paymentMethod" [(ngModel)]="paymentMethod" value="CARD" hidden>
+              <div class="payment-icon"><i class="fas fa-credit-card"></i></div>
+              <div class="payment-label">Credit Card</div>
+            </label>
+
+            <label class="payment-option" [class.selected]="paymentMethod === 'PAYPAL'">
+              <input type="radio" name="paymentMethod" [(ngModel)]="paymentMethod" value="PAYPAL" hidden>
+              <div class="payment-icon"><i class="fab fa-paypal"></i></div>
+              <div class="payment-label">PayPal</div>
+            </label>
+
+            <label class="payment-option" [class.selected]="paymentMethod === 'CASH'">
+              <input type="radio" name="paymentMethod" [(ngModel)]="paymentMethod" value="CASH" hidden>
+              <div class="payment-icon"><i class="fas fa-money-bill-wave"></i></div>
+              <div class="payment-label">Cash</div>
+            </label>
+
+            <label class="payment-option" [class.selected]="paymentMethod === 'TRANSFER'">
+              <input type="radio" name="paymentMethod" [(ngModel)]="paymentMethod" value="TRANSFER" hidden>
+              <div class="payment-icon"><i class="fas fa-university"></i></div>
+              <div class="payment-label">Bank Transfer</div>
+            </label>
+          </div>
+
+          <!-- Card information -->
+          <div *ngIf="paymentMethod === 'CARD'" class="card-details">
+            <h5><i class="fas fa-credit-card"></i> Card Information</h5>
+            <div class="form-group">
+              <label><i class="fas fa-credit-card"></i> Card Number</label>
+              <input type="text" placeholder="1234 5678 9012 3456" maxlength="19" [(ngModel)]="cardNumber" (input)="formatCardNumber()">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fas fa-calendar"></i> Expiration Date</label>
+                <input type="text" placeholder="MM/YY" [(ngModel)]="cardExpiry" (input)="formatExpiry()">
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-lock"></i> CVV</label>
+                <input type="password" placeholder="123" maxlength="3" [(ngModel)]="cardCVV">
+              </div>
+            </div>
+            <div class="card-logos">
+              <i class="fab fa-cc-visa"></i>
+              <i class="fab fa-cc-mastercard"></i>
+              <i class="fab fa-cc-amex"></i>
+            </div>
+          </div>
+
+          <!-- PayPal -->
+          <div *ngIf="paymentMethod === 'PAYPAL'" class="paypal-details">
+            <h5><i class="fab fa-paypal"></i> PayPal Payment</h5>
+            <p>You will be redirected to PayPal to complete your payment securely.</p>
+            <button class="btn-paypal" (click)="processPayPal()">
+              <i class="fab fa-paypal"></i> Pay with PayPal
+            </button>
+          </div>
+
+          <!-- Cash -->
+          <div *ngIf="paymentMethod === 'CASH'" class="cash-details">
+            <h5><i class="fas fa-money-bill-wave"></i> Cash Payment</h5>
+            <p>Payment will be made upon your arrival at the hotel reception.</p>
+            <div class="cash-info">
+              <i class="fas fa-info-circle"></i>
+              <span>Please present your reservation confirmation.</span>
+            </div>
+          </div>
+
+          <!-- Bank Transfer -->
+          <div *ngIf="paymentMethod === 'TRANSFER'" class="transfer-details">
+            <h5><i class="fas fa-university"></i> Bank Transfer</h5>
+            <div class="bank-info">
+              <p><strong>Beneficiary:</strong> ROYELLAS HOTEL</p>
+              <p><strong>IBAN:</strong> MA64 0000 0000 0000 0000 0000 123</p>
+              <p><strong>Bank:</strong> Bank Al-Maghrib</p>
+              <p><strong>Reference:</strong> RES-{{ selectedReservation?.idReservation }}</p>
+            </div>
+            <p class="transfer-note">Please send us the transfer proof by email after payment.</p>
+          </div>
+        </div>
+
+        <!-- Error message -->
+        <div *ngIf="paymentError" class="error-message">
+          <i class="fas fa-exclamation-circle"></i> {{ paymentError }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer" *ngIf="!paymentSuccess">
+      <button class="btn-cancel" (click)="closeModal()">
+        <i class="fas fa-times"></i> Cancel
+      </button>
+      <button class="btn-confirm"
+              (click)="processPayment()"
+              [disabled]="processing || isAlreadyPaid()">
+        <i class="fas"
+           [class.fa-spinner]="processing"
+           [class.fa-spin]="processing"
+           [class.fa-check]="!processing && !isAlreadyPaid()"
+           [class.fa-ban]="isAlreadyPaid()"></i>
+        {{ isAlreadyPaid() ? 'Already Paid' : (processing ? 'Processing...' : 'Confirm Payment') }}
+      </button>
+    </div>
+  </div>
+</div>
