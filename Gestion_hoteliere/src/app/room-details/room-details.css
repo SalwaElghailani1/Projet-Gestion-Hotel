@@ -102,84 +102,98 @@ body {
   width: 100%;
 }
 
-
-
-.room-details {
+.room-details-horizontal {
   display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  background-color: #fff;
-  border-radius: 15px;
-  padding: 130px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  margin-bottom: 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex-direction: column;
+  max-width: 1500px;
+  margin: 80px auto;
+  gap: 15px;
 }
 
+.room-number-top {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-align: center;
+  margin-bottom: 15px;
+}
 
-.room-details:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+.room-main-row {
+  display: flex;
+  gap: 85px;
+  align-items: flex-start;
+  background-color: transparent;
+  padding: 20px;
 }
 
 .room-img {
   flex: 1 1 300px;
-  max-width: 400px;
-  height: auto;         /* height fixe */
-  object-fit: cover;     /* image full, ma ttcropch */
-  border-radius: 12px;
-  transition: transform 0.3s ease;
+  max-width: 550px;
+  max-height: 450px;
+  object-fit: cover;
 }
 
-.room-img:hover {
-  transform: scale(1.05);
-}
-
-
-/* Info section */
-.room-info {
+.room-info-column {
   flex: 2 1 400px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-/* Fonts & colors */
-.room-number {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-  font-size: 2.2rem;
-  margin-bottom: 85px;
-  color: #1a1a1a;
-}
-
-.room-type {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
-  font-size: 1.8rem;
-  margin-bottom: 25px;
-  color: #c9a96e; /* golden accent */
+  gap: 15px;
+  margin-bottom: 65px;
 }
 
 .room-desc {
-  font-family: 'Roboto', sans-serif;
-  font-size: 1.5rem;
-  margin-bottom: 25px;
+  font-size: 1rem;
   color: #555;
+  margin-top: 40px;
 }
 
 .room-price span {
   font-weight: 700;
   font-size: 1.2rem;
-  margin-bottom: 25px;
-  color: #2e7d32; /* green accent for price */
+  color: #2e7d32;
+}
+
+.room-info-row {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 .room-bed {
-  font-size: 1.2rem;
-  font-style: italic;
-  color: #777;
+  font-size: 1.1rem;
+  color: #c9a96e;
+  gap: 6px;
 }
+
+.reserve-btn:hover:not(:disabled) {
+  background-color: #a38750;
+  transform: translateY(-2px);
+}
+
+.reserve-btn:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .room-main-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .room-info-column {
+    align-items: center;
+    text-align: center;
+  }
+
+  .reserve-btn {
+    align-self: center;
+  }
+}
+
 
 /* Status badge */
 .room-status-msg {
@@ -197,21 +211,25 @@ margin-top: 15px;
 .available-msg {
   background-color: #e6f9ed;
   color: #2e7d32;
+  font-size: 18px;
 }
 
 .occupied-msg {
   background-color: #fff4e5;
   color: #f57c00;
+  font-size: 18px;
+
 }
 
 .maintenance-msg {
   background-color: #fdecea;
   color: #c62828;
+  font-size: 18px;
+
 }
 
 /* Reserve button */
 .reserve-btn {
-  margin-top: 12px;
   padding: 0.8rem 1.5rem;
   background-color: #c9a96e;
   color: #000000;
@@ -219,8 +237,9 @@ margin-top: 15px;
   font-size: 1.4rem;
   border: none;
   border-radius: 12px;
-  font-weight: 600;
+  font-weight: 650;
   cursor: pointer;
+  margin-top: 65px;
   transition: all 0.3s ease;
 }
 
@@ -408,14 +427,18 @@ margin-top: 15px;
   }
 }
 
-
 .hotel-description {
-  font-size: 16px;
-  font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif; /* r9i9 w modern */
-  font-weight: 100;         /* light */
-  color: #000000;           /* light color 3la tswira */
-  max-width: 650px;         /* tban statique w centered */
-  line-height: 1.6;         /* breathing space */
+  font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 100;
+  color: #000;
+  max-width: 650px;
+  line-height: 1.6;
   letter-spacing: 0.5px;
-  margin-bottom: 25px;
+  margin: 15px auto 25px auto; /* center horizontal */
+  font-size: 16px;
+
+  text-align: justify; /* justify text bhal Word */
+  text-justify: inter-word; /* spacing m3adel bin kelmat */
 }
+
+

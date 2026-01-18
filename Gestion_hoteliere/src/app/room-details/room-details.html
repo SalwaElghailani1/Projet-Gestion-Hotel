@@ -32,33 +32,39 @@
 </div>
 
 <div class="room-details">
-  <!-- Image -->
-  <img [src]="'http://localhost:8093/uploads/' + room.image"
-       [alt]="room.type"
-       class="room-img">
 
-  <!-- Info -->
-  <div class="room-info">
-    <h2 class="room-number"> {{ room.type }} Room {{ room.numero }}</h2>
-    <p class="room-desc">{{ room.description }}</p>
-    <p class="hotel-description">
-      Discover the epitome of luxury at ROYELLAS Hotel. Each room and suite is thoughtfully designed to blend elegance with comfort, featuring breathtaking views, plush bedding, and world-class amenities. From intimate retreats to expansive suites, every space promises an unforgettable stay tailored for discerning travelers. Experience the art of hospitality, where every detail is crafted to delight and every moment is designed to inspire.
-    </p>
-    <p class="room-price"><span>{{ room.prix }} MAD/night</span></p>
-    <p class="room-bed"><i class="fas fa-bed"></i> {{ room.type }} </p>
-    <p class="room-bed"><i class="fas fa-ruler-combined"></i> {{ room.lit_long }}x{{ room.lit_large }}</p>
+  <div class="room-number-top">{{ room.type }} Room {{ room.numero }}</div>
 
-    <!-- Status badge -->
+  <!-- Main Row: Image + Info -->
+  <div class="room-main-row">
+    <!-- Room Image -->
+    <img [src]="'http://localhost:8093/uploads/' + room.image"
+         [alt]="room.type"
+         class="room-img">
+
+    <!-- Info Column -->
+    <div class="room-info-column">
+      <p class="room-desc">Here : {{ room.description }}</p>
+      <p class="hotel-description">
+        Discover the epitome of luxury at ROYELLAS Hotel. Each room and suite is thoughtfully designed to blend elegance with comfort, featuring breathtaking views, plush bedding, and world-class amenities. From intimate retreats to expansive suites, every space promises an unforgettable stay tailored for discerning travelers. Experience the art of hospitality, where every detail is crafted to delight and every moment is designed to inspire.
+      </p>
+      <p class="room-price"><span>Price: {{ room.prix }} MAD/night</span></p>
+      <div class="room-info-row">
+        <p class="room-bed"><i class="fas fa-bed"></i> {{ room.type }} </p>
+        <p class="room-bed"><i class="fas fa-ruler-combined"></i> {{ room.lit_long }}x{{ room.lit_large }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="room-number-top">
     <p class="room-status-msg"
        [ngClass]="{
          'occupied-msg': room.etat === 'Occupée',
          'maintenance-msg': room.etat === 'Maintenance',
          'available-msg': room.etat === 'Disponible'
-       }">
+       }"> This Room Is:
       {{ room.etat }}
     </p>
-
-    <!-- Reserve button -->
     <button
       class="reserve-btn"
       [disabled]="room.etat !== 'Disponible'"
