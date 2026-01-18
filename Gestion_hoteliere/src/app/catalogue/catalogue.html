@@ -4,6 +4,8 @@
       crossorigin="anonymous" referrerpolicy="no-referrer" />
 <!-- Dans index.html -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Import Google Font Poppins -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <!-- Navigation Bar -->
 <nav class="navbar">
@@ -36,6 +38,20 @@
 
 <section class="catalogue" id="catalogue">
   <div class="container">
+    <!-- Mini Hero fo9 nos page -->
+    <section class="mini-hero">
+      <div class="showcase-overlay"></div>
+      <div class="mini-hero-content">
+        <h2>ROYELLAS HOTEL CATALOGUE</h2>
+        <p>Experience the ultimate in comfort and luxury at Royellas Hotel.
+          Each of our rooms and suites is meticulously designed to offer a serene retreat,
+          combining elegant décor, premium furnishings, and breathtaking views.
+          From our cozy deluxe rooms to the opulent presidential suites,
+          every space is crafted to ensure an unforgettable stay. Enjoy modern amenities, plush bedding,
+          and personalized services that cater to your every need, making your visit truly exceptional.</p>
+        <div class="badge">ROYELLAS ROOMS & SUITES</div>
+        </div>
+    </section>
 
     <div class="filters">
 
@@ -64,13 +80,14 @@
 
     <div class="catalogue-grid">
       <div class="catalogue-card" *ngFor="let room of rooms$ | async">
-        <img *ngIf="room.image" [src]="'http://localhost:8093/uploads/' + room.image" [alt]="room.type" class="catalogue-img">
+        <img *ngIf="room.image" [src]="'http://localhost:8093/uploads/' + room.image" [alt]="room.type" class="room-img">
         <div class="catalogue-content">
-          <h3 class="room-title">Room {{ room.numero }}</h3>
-          <p class="room-title">For {{ room.type }}</p>
+          <h3 class="room-title"> {{ room.type }} Room {{ room.numero }}</h3>
           <div class="room-price">{{ room.prix }} MAD/ night</div>
+          <p class="room-desc">{{ room.description }}</p>
           <div class="room-features">
-            <span class="room-feature"><i class="fas fa-bed"></i> {{ room.lit_long }}x{{ room.lit_large }} Bed</span>
+            <span class="room-feature"><i class="fas fa-bed"></i> {{ room.type }} </span>
+            <span class="room-feature"><i class="fas fa-ruler-combined"></i> {{ room.lit_long }}x{{ room.lit_large }}</span>
           </div>
           <a class="room-link" style="cursor:pointer" (click)="goToRoomDetails(room.id)">
             VIEW DETAILS <i class="fas fa-arrow-right"></i>
@@ -81,4 +98,142 @@
 
   </div>
 </section>
+
+
+<!-- CTA Section -->
+<section class="cta" id="dining">
+  <div class="container">
+    <h2 class="cta-title">Exquisite Dining Experience</h2>
+    <p class="cta-desc">Indulge in culinary excellence at our award-winning restaurants, featuring locally-sourced ingredients and international flavors curated by our master chefs.</p>
+    <a (click)="openBookingModal()" class="btn btn-primary" style="cursor: pointer">EXPLORE DINING OPTIONS</a>
+  </div>
+  <!-- À la fin de home.component.html, juste avant </div> -->
+
+</section>
+<app-chatbot></app-chatbot>
+<!-- Footer -->
+<footer id="contact">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-about">
+        <a href="#" class="footer-logo">ROYELLAS</a>
+        <p class="footer-desc">The best luxury hotel in California, offering unparalleled comfort, world-class amenities, and exceptional service for the discerning traveler.</p>
+
+        <!-- Carte de localisation -->
+        <div class="location-map">
+          <h4 class="map-title">Our Location</h4>
+          <div class="map-container">
+            <!-- Iframe Google Maps -->
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.7481501882245!2d-118.40182468478333!3d34.06283798060621!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2bc04d6d147ab%3A0xd6c7c379fd081ed1!2sBeverly%20Hills%2C%20Californie%2C%20%C3%89tats-Unis!5e0!3m2!1sfr!2sfr!4v1687876543210!5m2!1sfr!2sfr"
+              width="100%"
+              height="200"
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Royellas Hotel Location in Beverly Hills">
+            </iframe>
+
+            <!-- Alternative avec image statique si iframe ne fonctionne pas -->
+            <div class="map-fallback">
+              <img src="https://maps.googleapis.com/maps/api/staticmap?center=Beverly+Hills,CA&zoom=15&size=300x200&scale=2&markers=color:gold%7Clabel:H%7C34.0628,-118.4007&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
+                   alt="Royellas Hotel Location Map"
+                   class="static-map">
+              <div class="map-overlay" (click)="openGoogleMaps()">
+                <i class="fas fa-map-marked-alt"></i>
+                <span>Open in Google Maps</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="location-actions">
+            <button class="direction-btn" (click)="getDirections()">
+              <i class="fas fa-directions"></i> Get Directions
+            </button>
+            <button class="location-btn" (click)="openGoogleMaps()">
+              <i class="fas fa-external-link-alt"></i> View Larger Map
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-links-container">
+        <h3 class="footer-title">Quick Links</h3>
+        <ul class="footer-links">
+          <li><a (click)="scrollToSection('home')" style="cursor: pointer">Home</a></li>
+          <li><a (click)="scrollToSection('rooms')" style="cursor: pointer">Rooms & Suites</a></li>
+          <li><a (click)="scrollToSection('amenities')" style="cursor: pointer">Amenities</a></li>
+          <li><a (click)="scrollToSection('dining')" style="cursor: pointer">Dining</a></li>
+          <li><a (click)="scrollToSection('contact')" style="cursor: pointer">Contact</a></li>
+        </ul>
+
+        <!-- Informations de contact à côté des liens -->
+        <div class="contact-info-mobile">
+          <h3 class="footer-title">Contact Us</h3>
+          <ul class="contact-info">
+            <li><i class="fas fa-map-marker-alt"></i> <span>123 Luxury Avenue, Beverly Hills, CA 90210</span></li>
+            <li><i class="fas fa-phone"></i> <span>+1 (310) 555-1234</span></li>
+            <li><i class="fas fa-envelope"></i> <span>reservations@royellashotel.com</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-contact">
+        <h3 class="footer-title">Hotel Information</h3>
+        <ul class="hotel-info">
+          <li><i class="fas fa-clock"></i> <span>Check-in: 3:00 PM | Check-out: 11:00 AM</span></li>
+          <li><i class="fas fa-car"></i> <span>Valet Parking Available</span></li>
+          <li><i class="fas fa-wifi"></i> <span>Complimentary High-Speed Wi-Fi</span></li>
+          <li><i class="fas fa-concierge-bell"></i> <span>24/7 Concierge Service</span></li>
+          <li><i class="fas fa-dog"></i> <span>Pet-Friendly Accommodations</span></li>
+        </ul>
+
+        <!-- Newsletter Signup -->
+        <div class="newsletter">
+          <h4 class="newsletter-title">Stay Updated</h4>
+          <p class="newsletter-desc">Subscribe for exclusive offers and updates</p>
+          <div class="newsletter-form">
+            <input type="email" placeholder="Your email address" class="newsletter-input">
+            <button class="newsletter-btn" (click)="subscribeNewsletter()">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Social Media -->
+
+
+
+        <!-- Social Media -->
+        <div class="social-media">
+          <h4 class="social-title">Follow Us</h4>
+          <div class="social-icons">
+            <a href="https://facebook.com" target="_blank" class="social-icon facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://instagram.com" target="_blank" class="social-icon instagram">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://twitter.com" target="_blank" class="social-icon twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="https://tripadvisor.com" target="_blank" class="social-icon tripadvisor">
+              <i class="fas fa-star"></i> <!-- Icône étoile -->
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <p>&copy; {{currentYear}} Royellas Rooms & Suites. All rights reserved. | Luxury Hotel in California</p>
+      <div class="footer-legal">
+        <a href="#" (click)="openPrivacyPolicy()">Privacy Policy</a> |
+        <a href="#" (click)="openTerms()">Terms & Conditions</a> |
+        <a href="#" (click)="openAccessibility()">Accessibility Statement</a>
+      </div>
+    </div>
+  </div>
+</footer>
 

@@ -320,9 +320,9 @@
               </div>
 
               <div class="form-group">
-                <label for="tel">Phone *</label>
-                <input type="tel" id="tel" formControlName="tel" placeholder="06 XX XX XX XX">
-                <div class="error" *ngIf="profileForm.get('tel')?.invalid && profileForm.get('tel')?.touched">
+                <label for="telephone">Phone *</label>
+                <input type="tel" id="telephone" formControlName="telephone" placeholder="06 XX XX XX XX">
+                <div class="error" *ngIf="profileForm.get('telephone')?.invalid && profileForm.get('telephone')?.touched">
                   Phone required
                 </div>
               </div>
@@ -338,8 +338,13 @@
               </div>
 
               <div class="form-group">
-                <label for="cne">CNE *</label>
-                <input type="text" id="cne" formControlName="cne" placeholder="Your CNE">
+                <label for="cin">CIN *</label>
+                <input type="text" id="cin" formControlName="cin" placeholder="Your CIN">
+              </div>
+
+              <div class="form-group">
+                <label for="adresse">Address *</label>
+                <input type="text" id="adresse" formControlName="adresse" placeholder="Your Address">
               </div>
             </div>
           </div>
@@ -349,7 +354,7 @@
               <i class="fas fa-times"></i> Cancel
             </button>
             <button type="submit" class="btn-primary" [disabled]="!profileForm.valid">
-              <i class="fas fa-save"></i> Save
+              <i class="fas fa-save"></i> Save Changes
             </button>
           </div>
         </div>

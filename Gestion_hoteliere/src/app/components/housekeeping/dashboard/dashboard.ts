@@ -63,9 +63,10 @@ export class HousekeepingDashboardComponent implements OnInit {
       nom: ['', Validators.required],
       prenom: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      tel: ['', Validators.required],
+      telephone: ['', Validators.required],
       dateNaissance: ['', Validators.required],
-      cne: ['', Validators.required]
+      cin: ['', Validators.required],
+      adresse: ['', Validators.required]
     });
   }
 
@@ -87,15 +88,24 @@ export class HousekeepingDashboardComponent implements OnInit {
         this.message = '✅ Profil mis à jour avec succès!';
         this.userName = updated.nom + ' ' + updated.prenom;
         setTimeout(() => this.message = '', 3000);
+        this.showNotification('Profil mis à jour avec succès!');
       },
       error: err => {
         console.error(err);
         this.message = '❌ Erreur lors de la mise à jour!';
         setTimeout(() => this.message = '', 3000);
+        this.showNotification('Erreur lors de la mise à jour du profil');
       }
     });
   }
 
+  showNotification(message: string): void {
+    // Simuler une notification
+    alert(message);
+
+    // Dans une application réelle, vous utiliseriez un service de notifications
+    // this.notificationService.show(message);
+  }
   cancelEdit(): void {
     this.loadProfile();
     this.message = 'Modifications annulées';

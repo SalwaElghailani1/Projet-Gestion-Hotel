@@ -2,6 +2,8 @@ package faculte.service_interne.web;
 
 import faculte.service_interne.dto.UserProfileRequest;
 import faculte.service_interne.dto.UserProfileResponse;
+import faculte.service_interne.entities.MetierRole;
+import faculte.service_interne.entities.ProfileStatus;
 import faculte.service_interne.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -67,29 +69,22 @@ public class UserProfileController {
             @ApiResponse(responseCode = "200", description = "Profil mis à jour avec succès"),
             @ApiResponse(responseCode = "404", description = "Profil non trouvé")
     })
-    @PreAuthorize("hasRole('ADMIN') or ((#userId == authentication.principal.claims['userId']) and (" +
-            "authentication.principal.claims['roles'].contains('ADMIN') or " +
-            "authentication.principal.claims['roles'].contains('HOUSEKEEPING') or " +
-            "authentication.principal.claims['roles'].contains('RECEPTIONNISTE') or " +
-            "authentication.principal.claims['roles'].contains('MANAGER') or " +
-            "authentication.principal.claims['roles'].contains('MAINTENANCE') or " +
-            "authentication.principal.claims['roles'].contains('COMPTABLE')))")
-    @PutMapping
-    public ResponseEntity<UserProfileResponse> updateUserProfile(
-            @AuthenticationPrincipal Jwt jwt,
-            @Valid @RequestBody UserProfileRequest request,
-            @RequestParam(required = false) Integer userIdParam) {
 
-        Integer userId;
-        List<String> roles = jwt.getClaim("roles");
-        if (userIdParam != null) {
-            if (!roles.contains("ADMIN")) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
-            userId = userIdParam;
-        } else {
-            userId = ((Long) jwt.getClaim("userId")).intValue();
-        }
+    @PreAuthorize(
+            "(#userId == authentication.principal.claims['userId']) and " +
+                    "(authentication.principal.claims['roles'].contains('ADMIN') or " +
+                    " authentication.principal.claims['roles'].contains('HOUSEKEEPING') or " +
+                    " authentication.principal.claims['roles'].contains('RECEPTIONNISTE') or " +
+                    " authentication.principal.claims['roles'].contains('MANAGER') or " +
+                    " authentication.principal.claims['roles'].contains('MAINTENANCE') or " +
+                    " authentication.principal.claims['roles'].contains('COMPTABLE'))"
+    )
+    @PutMapping("/me")
+    public ResponseEntity<UserProfileResponse> updateMyProfilePartial(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestBody UserProfileRequest request) {
+
+        Integer userId = ((Long) jwt.getClaim("userId")).intValue();
 
         return ResponseEntity.ok(service.updateUserProfile(userId, request));
     }
@@ -112,31 +107,73 @@ public class UserProfileController {
     )
     @GetMapping("/me")
     public ResponseEntity<UserProfileResponse> getMyProfile(@AuthenticationPrincipal Jwt jwt) {
+
         Integer userId = ((Long) jwt.getClaim("userId")).intValue();
-        String nom = jwt.getClaim("nom") != null ? jwt.getClaim("nom") : "Inconnu";
-        String prenom = jwt.getClaim("prenom") != null ? jwt.getClaim("prenom") : "Inconnu";
+        String nom = jwt.getClaim("nom");
+        String prenom = jwt.getClaim("prenom");
         String email = jwt.getClaim("email");
 
-        UserProfileResponse profileResponse;
+        List<String> roles = jwt.getClaim("roles");
+
+        String mainRole = roles.get(0);
+        MetierRole jwtRole = MetierRole.valueOf(mainRole);
+
+
+        UserProfileResponse profile;
+
         try {
-            profileResponse = service.getUserProfileById(userId);
+            profile = service.getUserProfileById(userId);
+
+            // 🔄 synchro role JWT <-> DB
+            if (profile.getMetierRole() != jwtRole) {
+                service.updateMetierRole(userId, jwtRole);
+                profile.setMetierRole(jwtRole);
+            }
+
+            // ✅ Si profil en DRAFT ou autre, update status → ON_WORK
+            if (profile.getStatus() == ProfileStatus.DRAFT ||
+                    profile.getStatus() == null) {
+                profile.setStatus(ProfileStatus.ON_WORK);
+                service.updateProfileStatus(userId, ProfileStatus.ON_WORK);
+            }
+
         } catch (RuntimeException e) {
+
             UserProfileRequest request = new UserProfileRequest();
-            profileResponse = service.createUserProfile(userId, nom, prenom, email, request);
+            request.setMetierRole(jwtRole);
+
+            profile = service.createUserProfile(
+                    userId,
+                    nom != null ? nom : "Inconnu",
+                    prenom != null ? prenom : "Inconnu",
+                    email,
+                    request
+            );
         }
 
-        return ResponseEntity.ok(profileResponse);
+        return ResponseEntity.ok(profile);
     }
 
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@AuthenticationPrincipal Jwt jwt) {
+        Integer userId = ((Long) jwt.getClaim("userId")).intValue();
+
+        service.updateProfileStatus(userId, ProfileStatus.OUT_WORK);
+
+        return ResponseEntity.ok("Utilisateur déconnecté, status OUT_WORK");
+    }
 
     @Operation(summary = "Lister tous les profils internes(Admin)",
             description = "Retourne la liste complète des profils internes existants")
     @ApiResponse(responseCode = "200", description = "Liste des profils récupérée avec succès")
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     @GetMapping
-    public ResponseEntity<List<UserProfileResponse>> getAllUserProfiles() {
-        return ResponseEntity.ok(service.getAllUserProfiles());
+    public ResponseEntity<List<UserProfileResponse>> getAllUserProfiles(
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        return ResponseEntity.ok(service.getAllUserProfiles(jwt));
     }
 
     @Operation(summary = "Supprimer profil interne (Admin)",

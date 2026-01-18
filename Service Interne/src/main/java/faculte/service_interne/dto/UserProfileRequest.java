@@ -25,6 +25,7 @@ public class UserProfileRequest {
     private String telephone;
     private String email;
     private String adresse;
+    private LocalDate dateNaissance;
 
     private String cin;
 

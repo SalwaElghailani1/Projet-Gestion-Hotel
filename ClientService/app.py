@@ -31,5 +31,6 @@ def health():
     return "UP", 200
 
 if __name__ == "__main__":
-    start_eureka()   # ✅ Eureka هنا
+
+    start_eureka()
     app.run(debug=True, host="0.0.0.0", port=8088)

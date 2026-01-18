@@ -51,6 +51,9 @@ public class UserProfile {
     /** Numéro de carte d'identité (utile pour la vérification) */
     private String cin;
 
+    /** Date de naissance de l'utilisateur */
+    private LocalDate dateNaissance;
+
     // =========================
     // INFORMATIONS METIER
     // =========================

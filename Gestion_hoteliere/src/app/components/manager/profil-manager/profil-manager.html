@@ -79,7 +79,7 @@
         <div class="nav-icon">
           <i class="fas fa-exclamation-triangle"></i>
         </div>
-        <span class="nav-text">Signaler</span>
+        <span class="nav-text">Report</span>
       </div>
     </div>
 
@@ -88,11 +88,11 @@
       <div class="sidebar-actions">
         <button class="nav-btn logout-btn" (click)="logout()">
           <i class="fas fa-sign-out-alt"></i>
-          <span>Déconnexion</span>
+          <span>Disconnect</span>
         </button>
         <button class="nav-btn delete-btn" (click)="deleteAccount()">
           <i class="fas fa-trash-alt"></i>
-          <span>Supprimer</span>
+          <span>DELETE</span>
         </button>
       </div>
     </div>
@@ -102,8 +102,8 @@
     <!-- Profile Section -->
     <div class="content-section profile-edit" *ngIf="activeSection === 'profile'">
       <div class="page-header">
-        <h1><i class="fas fa-user-edit"></i> Modifier le Profil</h1>
-        <p class="page-subtitle">Mettez à jour vos informations personnelles</p>
+        <h1><i class="fas fa-user-edit"></i> Edit Profile</h1>
+        <p class="page-subtitle">Update your personal information</p>
       </div>
 
       <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" class="profile-form">
@@ -113,8 +113,8 @@
               <h3>{{user.nom}} {{user.prenom}}</h3>
               <p>{{profileForm.get('email')?.value}}</p>
               <p>
-                You are the manager. You can visualize the dashboard, manage rooms by creating, editing, or deleting them,
-                and oversee all internal services of the hotel.
+                You are the manager. You can view the dashboard, manage rooms by creating,
+                editing or deleting them, and oversee all internal hotel services.
               </p>
             </div>
           </div>
@@ -122,16 +122,16 @@
 
         <div class="form-content">
           <div class="form-section">
-            <h3><i class="fas fa-id-card"></i> Informations Personnelles</h3>
+            <h3><i class="fas fa-id-card"></i> Personal Information</h3>
             <div class="form-grid">
               <div class="form-group">
-                <label for="nom">Nom *</label>
-                <input type="text" id="nom" formControlName="nom" placeholder="Your LastName" readonly>
+                <label for="nom">Last Name *</label>
+                <input type="text" id="nom" formControlName="nom" placeholder="Your Last Name" readonly>
               </div>
 
               <div class="form-group">
-                <label for="prenom">Prénom *</label>
-                <input type="text" id="prenom" formControlName="prenom" placeholder="Your FirstName" readonly>
+                <label for="prenom">First Name *</label>
+                <input type="text" id="prenom" formControlName="prenom" placeholder="Your First Name" readonly>
               </div>
 
               <div class="form-group">
@@ -139,35 +139,39 @@
                 <input type="email" id="email" formControlName="email" placeholder="Your Email" readonly>
               </div>
 
-
               <div class="form-group">
-                <label for="tel">Téléphone *</label>
-                <input type="tel" id="tel" formControlName="tel" placeholder="06 XX XX XX XX">
+                <label for="telephone">Phone *</label>
+                <input type="tel" id="telephone" formControlName="telephone" placeholder="+212 XX XX XX XX">
               </div>
             </div>
           </div>
 
           <div class="form-section">
-            <h3><i class="fas fa-info-circle"></i> Informations Additionnelles</h3>
+            <h3><i class="fas fa-info-circle"></i> Additional Information</h3>
             <div class="form-grid">
               <div class="form-group">
-                <label for="dateNaissance">Date de naissance *</label>
+                <label for="dateNaissance">Date of Birth *</label>
                 <input type="date" id="dateNaissance" formControlName="dateNaissance">
               </div>
 
               <div class="form-group">
-                <label for="cne">CNE *</label>
-                <input type="text" id="cne" formControlName="cne" placeholder="Votre CNE">
+                <label for="cin">National ID *</label>
+                <input type="text" id="cin" formControlName="cin" placeholder="Your ID Number">
+              </div>
+
+              <div class="form-group">
+                <label for="adresse">Address *</label>
+                <input type="text" id="adresse" formControlName="adresse" placeholder="Your Address">
               </div>
             </div>
           </div>
 
           <div class="form-actions">
             <button type="button" class="btn-secondary" (click)="cancelEdit()">
-              <i class="fas fa-times"></i> Annuler
+              <i class="fas fa-times"></i> Cancel
             </button>
             <button type="submit" class="btn-primary">
-              <i class="fas fa-save"></i> Enregistrer les modifications
+              <i class="fas fa-save"></i> Save Changes
             </button>
           </div>
         </div>
@@ -193,13 +197,14 @@
         </div>
 
         <div class="stat-card">
-          <h3>Réservations</h3>
-          <p>78</p>
+          <h3>Reservations</h3>
+          <p>{{ reservations.length }}</p>
+
         </div>
 
         <div class="stat-card">
-          <h3>Revenus</h3>
-          <p>120 000 MAD</p>
+          <h3>Income</h3>
+          <p>{{ totalIncome | number:'1.0-0' }} MAD</p>
         </div>
       </div>
 
@@ -207,24 +212,40 @@
       <div class="charts-grid">
 
         <!-- Bar Chart -->
+        <!-- Reservations Chart -->
         <div class="chart-card">
-          <h3>Réservations par mois</h3>
+          <h3>Reservations per month</h3>
 
-          <div class="bar-chart">
-            <div class="bar"><span>Jan</span><div style="height:60%"></div></div>
-            <div class="bar"><span>Fév</span><div style="height:80%"></div></div>
-            <div class="bar"><span>Mar</span><div style="height:40%"></div></div>
-            <div class="bar"><span>Avr</span><div style="height:90%"></div></div>
-            <div class="bar"><span>Mai</span><div style="height:70%"></div></div>
+          <div *ngIf="reservationsByMonth && reservationsByMonth.length > 0;">
+            <div class="bar-chart">
+              <div class="bar" *ngFor="let item of reservationsByMonth">
+                <!-- Barre avec valeur -->
+                <div class="bar-fill"
+                     [ngClass]="{'empty-bar': item.count === 0}"
+                     [style.height.%]="getBarHeight(item.count)">
+                  <!-- Affichage de la valeur au survol -->
+                  <div class="bar-value">{{ item.count }}</div>
+                </div>
+                <span>{{ item.month }}</span>
+              </div>
+            </div>
+
+            <!-- Légende -->
+            <div class="chart-legend">
+              <div class="legend-item">
+                <span class="legend-color" style="background: linear-gradient(180deg, #6a11cb, #2575fc);"></span>
+              </div>
+            </div>
           </div>
         </div>
 
+
         <!-- Progress Chart -->
         <div class="chart-card">
-          <h3>Taux d’occupation des chambres</h3>
+          <h3>Room Occupancy Rates</h3>
 
           <div class="progress-item">
-            <span>Chambres occupées</span>
+            <span>Occupied Rooms</span>
             <div class="progress-bar">
               <div class="progress-fill occupied" [style.width.%]="getRoomStatusPercentage('Occupée')"></div>
             </div>
@@ -232,7 +253,7 @@
           </div>
 
           <div class="progress-item">
-            <span>Disponibles</span>
+            <span>Available Rooms</span>
             <div class="progress-bar">
               <div class="progress-fill available" [style.width.%]="getRoomStatusPercentage('Disponible')"></div>
             </div>
@@ -255,8 +276,8 @@
     <div class="content-section" *ngIf="activeSection==='rooms'">
 
       <div class="page-header">
-        <h1><i class="fas fa-bed"></i> Chambres</h1>
-        <button class="btn-sm create-room" (click)="openCreateRoomModal()">Créer Room</button>
+        <h1><i class="fas fa-bed"></i> Rooms</h1>
+        <button class="btn-sm create-room" (click)="openCreateRoomModal()">Create Room</button>
       </div>
 
       <!-- ===== ROOMS TABLE ===== -->
@@ -264,16 +285,17 @@
         <table>
           <thead>
           <tr>
-            <th>Numéro</th>
+            <th>Number</th>
             <th>Type</th>
-            <th>Prix</th>
-            <th>État</th>
+            <th>Price</th>
+            <th>Status</th>
             <th>Description</th>
             <th>Images</th>
-            <th>Taux</th>
-            <th>Lit (L x l)</th>
+            <th>Rate</th>
+            <th>Bed (L x W)</th>
             <th>Action</th>
           </tr>
+
           </thead>
           <tbody>
           <tr *ngFor="let room of rooms">
@@ -296,8 +318,8 @@
             <td>{{ room.taux }} %</td>
             <td>{{ room.lit_long }} x {{ room.lit_large }} cm</td>
             <td>
-              <button class="btn-sm edit" (click)="editRoom(room)">Éditer</button>
-              <button class="btn-sm delete" (click)="deleteRoom(room.id)">Supprimer</button>
+              <button class="btn-sm edit" (click)="editRoom(room)">Edit</button>
+              <button class="btn-sm delete" (click)="deleteRoom(room.id)">DELETE</button>
             </td>
           </tr>
           </tbody>
@@ -311,18 +333,25 @@
       <div class="modal-overlay" (click)="closeCreateRoomModal()"></div>
       <div class="modal-content">
         <span class="close" (click)="closeCreateRoomModal()">&times;</span>
-        <h2>{{ isEditMode ? 'Modifier une chambre' : 'Créer une nouvelle chambre' }}</h2>
+        <h2>{{ isEditMode ? 'Edit Room' : 'Create New Room' }}</h2>
 
         <form (ngSubmit)="submitRoom()">
 
           <!-- Basic info -->
-          <input [(ngModel)]="selectedRoom.numero" name="numero" placeholder="Numéro" required>
+          <input [(ngModel)]="selectedRoom.numero" name="numero" placeholder="Room Number" required>
+
           <select [(ngModel)]="selectedRoom.type" name="type" required>
             <option>Single</option>
             <option>Double</option>
             <option>Suite</option>
           </select>
-          <input type="number" [(ngModel)]="selectedRoom.prix" name="prix" placeholder="Prix (MAD)" required>
+
+          <input type="number"
+                 [(ngModel)]="selectedRoom.prix"
+                 name="prix"
+                 placeholder="Price (MAD)"
+                 required>
+
           <select [(ngModel)]="selectedRoom.etat" name="etat" required>
             <option>Disponible</option>
             <option>Occupée</option>
@@ -330,42 +359,58 @@
           </select>
 
           <!-- Additional fields -->
-          <textarea [(ngModel)]="selectedRoom.description" name="description" placeholder="Description"></textarea>
-          <input type="number" [(ngModel)]="selectedRoom.taux" name="taux" placeholder="Taux (%)">
-          <input type="number" [(ngModel)]="selectedRoom.lit_long" name="lit_long" placeholder="Longueur lit (cm)">
-          <input type="number" [(ngModel)]="selectedRoom.lit_large" name="lit_large" placeholder="Largeur lit (cm)">
+          <textarea [(ngModel)]="selectedRoom.description"
+                    name="description"
+                    placeholder="Description"></textarea>
+
+          <input type="number"
+                 [(ngModel)]="selectedRoom.taux"
+                 name="taux"
+                 placeholder="Rate (%)">
+
+          <input type="number"
+                 [(ngModel)]="selectedRoom.lit_long"
+                 name="lit_long"
+                 placeholder="Bed Length (cm)">
+
+          <input type="number"
+                 [(ngModel)]="selectedRoom.lit_large"
+                 name="lit_large"
+                 placeholder="Bed Width (cm)">
 
           <!-- Image -->
-          <label>Image de la chambre</label>
+          <label>Room Image</label>
           <input type="file" (change)="onImageSelected($event)" accept="image/*">
+
           <div *ngIf="imagePreview">
-            <p>Aperçu:</p>
-            <img [src]="imagePreview" alt="Room Image" style="max-width:200px; max-height:150px;">
+            <p>Preview:</p>
+            <img [src]="imagePreview"
+                 alt="Room Image"
+                 style="max-width:200px; max-height:150px;">
           </div>
 
           <button type="submit" class="btn-sm create-room">
-            {{ isEditMode ? 'Modifier' : 'Créer' }}
+            {{ isEditMode ? 'Update' : 'Create' }}
           </button>
-        </form>
 
+        </form>
       </div>
     </div>
-
 
 
     <div class="content-section" *ngIf="activeSection === 'services'">
 
       <div class="page-header">
         <h1><i class="fas fa-users"></i> Internal Services</h1>
-        <p class="page-subtitle">Liste des employés et leurs horaires</p>
+        <p class="page-subtitle">List of employees and their status (on_work or out_work)</p>
       </div>
 
       <div class="internal-services-table">
         <table>
           <thead>
           <tr>
-            <th>Nom</th>
-            <th>Prénom</th>
+            <th>Last Name</th>
+            <th>First Name</th>
             <th>Email</th>
             <th>Role</th>
             <th>Status</th>
@@ -398,17 +443,17 @@
     <!-- Settings Section -->
     <div class="content-section" *ngIf="activeSection === 'settings'">
       <div class="page-header">
-        <h1><i class="fas fa-cog"></i> Paramètres</h1>
+        <h1><i class="fas fa-cog"></i> Settings</h1>
       </div>
 
       <div class="settings-container">
         <div class="settings-section">
-          <h2><i class="fas fa-bell"></i> Préférences de Notifications</h2>
+          <h2><i class="fas fa-bell"></i> Notification Preferences</h2>
           <div class="settings-options">
             <div class="setting-item">
               <div class="setting-info">
-                <h4>Notifications par email</h4>
-                <p>Recevoir des notifications importantes par email</p>
+                <h4>Email Notifications</h4>
+                <p>Receive important notifications by email</p>
               </div>
               <label class="switch">
                 <input type="checkbox" [(ngModel)]="settings.emailNotifications">
@@ -418,8 +463,8 @@
 
             <div class="setting-item">
               <div class="setting-info">
-                <h4>Notifications SMS</h4>
-                <p>Recevoir des alertes importantes par SMS</p>
+                <h4>SMS Notifications</h4>
+                <p>Receive important alerts via SMS</p>
               </div>
               <label class="switch">
                 <input type="checkbox" [(ngModel)]="settings.smsNotifications">
@@ -430,9 +475,9 @@
         </div>
 
         <div class="settings-section">
-          <h2><i class="fas fa-globe"></i> Langue et Région</h2>
+          <h2><i class="fas fa-globe"></i> Language and Region</h2>
           <div class="form-group">
-            <label for="language">Langue</label>
+            <label for="language">Languge</label>
             <select id="language" [(ngModel)]="settings.language" class="language-select">
               <option value="fr">Français</option>
               <option value="en">English</option>
@@ -442,12 +487,12 @@
         </div>
 
         <div class="settings-section">
-          <h2><i class="fas fa-lock"></i> Confidentialité</h2>
+          <h2><i class="fas fa-lock"></i> Confidentiality</h2>
           <div class="settings-options">
             <div class="setting-item">
               <div class="setting-info">
-                <h4>Profil public</h4>
-                <p>Rendre votre profil visible aux autres utilisateurs</p>
+                <h4>Public Profile</h4>
+                <p>Make your profile visible to other users</p>
               </div>
               <label class="switch">
                 <input type="checkbox" [(ngModel)]="settings.publicProfile">
@@ -467,7 +512,7 @@
 
       <div class="contact-container">
         <div class="contact-info-section">
-          <h2><i class="fas fa-info-circle"></i> Informations de Contact</h2>
+          <h2><i class="fas fa-info-circle"></i> Contact Information</h2>
           <div class="contact-cards">
             <div class="contact-card">
               <div class="contact-icon">
@@ -475,8 +520,8 @@
               </div>
               <div class="contact-content">
                 <h3>Email</h3>
-                <p>contact&#64;royellashotel.com</p>
-                <small>Réponse sous 24h</small>
+                <p>contact@royellashotel.com</p>
+                <small>Response within 24 hours</small>
               </div>
             </div>
 
@@ -485,7 +530,7 @@
                 <i class="fas fa-phone"></i>
               </div>
               <div class="contact-content">
-                <h3>Téléphone</h3>
+                <h3>Phone</h3>
                 <p>+212 5 XX XX XX XX</p>
                 <small>Lun-Ven: 9h-18h</small>
               </div>
@@ -496,28 +541,28 @@
                 <i class="fas fa-map-marker-alt"></i>
               </div>
               <div class="contact-content">
-                <h3>Adresse</h3>
-                <p>123 Avenue Mohammed V, Casablanca, Maroc</p>
-                <small>Visites sur rendez-vous</small>
+                <h3>Address</h3>
+                <p>123 Avenue Mohammed V, Casablanca, Morocco</p>
+                <small>Visits by appointment only</small>
               </div>
             </div>
           </div>
         </div>
 
         <div class="contact-form-section">
-          <h2><i class="fas fa-paper-plane"></i> Envoyer un Message</h2>
+          <h2><i class="fas fa-paper-plane"></i> Send a message</h2>
           <div class="contact-form">
             <div class="form-group">
-              <label for="contactSubject">Sujet</label>
-              <input type="text" id="contactSubject" placeholder="Objet de votre message">
+              <label for="contactSubject">Subject</label>
+              <input type="text" id="contactSubject" placeholder="Subject of your message">
             </div>
             <div class="form-group">
               <label for="contactMessage">Message</label>
               <textarea id="contactMessage" [(ngModel)]="contactMessage"
-                        placeholder="Votre message..." rows="6"></textarea>
+                        placeholder="Your message..." rows="6"></textarea>
             </div>
             <button class="btn-primary send-btn" (click)="sendMessage()">
-              <i class="fas fa-paper-plane"></i> Envoyer le Message
+              <i class="fas fa-paper-plane"></i> Send Message
             </button>
           </div>
         </div>
@@ -527,42 +572,42 @@
     <!-- Report Section -->
     <div class="content-section" *ngIf="activeSection === 'report'">
       <div class="page-header">
-        <h1><i class="fas fa-exclamation-triangle"></i> Signaler un Problème</h1>
+        <h1><i class="fas fa-exclamation-triangle"></i> Report a Problem</h1>
       </div>
 
       <div class="report-container">
         <div class="report-form">
           <div class="form-section">
-            <h3><i class="fas fa-clipboard-list"></i> Détails du Problème</h3>
+            <h3><i class="fas fa-clipboard-list"></i> Problem Details</h3>
             <div class="form-group">
-              <label for="reportType">Type de problème</label>
+              <label for="reportType">Type of problem</label>
               <select id="reportType" [(ngModel)]="report.type">
-                <option value="technical">Problème technique</option>
+                <option value="technical">Technical problem</option>
                 <option value="bug">Bug</option>
                 <option value="suggestion">Suggestion</option>
-                <option value="other">Autre</option>
+                <option value="other">Other</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label for="reportSubject">Sujet</label>
+              <label for="reportSubject">Subject</label>
               <input type="text" id="reportSubject" [(ngModel)]="report.subject"
-                     placeholder="Décrivez brièvement le problème">
+                     placeholder="Briefly describe the problem">
             </div>
 
             <div class="form-group">
-              <label for="reportDescription">Description détaillée</label>
+              <label for="reportDescription">Detailed description</label>
               <textarea id="reportDescription" [(ngModel)]="report.description"
-                        placeholder="Décrivez le problème en détail..."
+                        placeholder="Describe the problem in detail..."
                         rows="6"></textarea>
             </div>
 
             <div class="form-group">
-              <label for="reportScreenshot">Capture d'écran (optionnel)</label>
+              <label for="reportScreenshot">Screenshot (optional)</label>
               <div class="file-upload">
                 <label for="reportScreenshot" class="file-upload-label">
                   <i class="fas fa-cloud-upload-alt"></i>
-                  <span>Choisir un fichier</span>
+                  <span>Choose a file</span>
                 </label>
                 <input id="reportScreenshot" type="file"
                        (change)="onScreenshotSelected($event)"
@@ -573,10 +618,10 @@
 
           <div class="form-actions">
             <button class="btn-secondary">
-              <i class="fas fa-times"></i> Annuler
+              <i class="fas fa-times"></i> Cancel
             </button>
             <button class="btn-primary">
-              <i class="fas fa-paper-plane"></i> Envoyer le Rapport
+              <i class="fas fa-paper-plane"></i> Send the Report
             </button>
           </div>
         </div>
@@ -596,10 +641,10 @@
     <p>{{modalMessage}}</p>
     <div class="modal-actions">
       <button class="btn-secondary" (click)="showModal = false">
-        <i class="fas fa-times"></i> Annuler
+        <i class="fas fa-times"></i> Cancel
       </button>
       <button class="btn-danger" (click)="confirmAction()">
-        <i class="fas fa-check"></i> Confirmer
+        <i class="fas fa-check"></i> Confirme
       </button>
     </div>
   </div>
