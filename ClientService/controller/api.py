@@ -13,7 +13,7 @@ from flask import g
 # ----------------- App & DB Config -----------------
 app = Flask(__name__)
 
-DATABASE_URL = "mysql+pymysql://root:@localhost:3306/gestion_client"
+DATABASE_URL = "mysql+pymysql://root:root@mysql:3306/gestion_client"
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 db_session = SessionLocal()

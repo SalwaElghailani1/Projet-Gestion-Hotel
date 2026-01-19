@@ -1,43 +1,88 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: room-service
+  name: roomservice
+  labels:
+    app: roomservice
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: room-service
+      app: roomservice
   template:
     metadata:
       labels:
-        app: room-service
+        app: roomservice
     spec:
       containers:
-        - name: room-service
-          image: room-service:latest
-          imagePullPolicy: Never
+        - name: roomservice
+          image: roomservice:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8093
           env:
-            - name: DISCOVERY_SERVICE_URL
-              value: http://discovery-service.default.svc.cluster.local:8761/eureka
-
+            # App
+            - name: SPRING_APPLICATION_NAME
+              value: RoomService
+            - name: SERVER_PORT
+              value: "8093"
+            # Eureka
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: http://discovery-service:8761/eureka
+            - name: EUREKA_INSTANCE_HOSTNAME
+              value: roomservice
+            - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+              value: "false"
+            # MySQL
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql:3306/room_db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: root
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: 'update'
+            # RSA Key
+            - name: RSA_PUBLICKEY
+              value: file:/app/keys/publicKey.pem
+            # Upload directory
+            - name: UPLOAD_DIR
+              value: /app/uploads
+          volumeMounts:
+            - name: rsa-keys
+              mountPath: /app/keys
+            - name: uploads
+              mountPath: /app/uploads
           readinessProbe:
             httpGet:
               path: /actuator/health
               port: 8093
-            initialDelaySeconds: 5
+            initialDelaySeconds: 120
             periodSeconds: 10
-            failureThreshold: 7
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8093
+            initialDelaySeconds: 180
+            periodSeconds: 10
+            failureThreshold: 6
+      volumes:
+        - name: rsa-keys
+          configMap:
+            name: roomservice-keys
+        - name: uploads
+          emptyDir: {}
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: room-service
+  name: roomservice
 spec:
-  type: LoadBalancer
   selector:
-    app: room-service
+    app: roomservice
   ports:
     - port: 8093
       targetPort: 8093
+  type: ClusterIP

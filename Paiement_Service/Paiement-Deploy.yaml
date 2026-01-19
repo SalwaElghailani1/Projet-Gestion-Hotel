@@ -1,29 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: client-service
+  name: paiement-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: client-service
+      app: paiement-service
   template:
     metadata:
       labels:
-        app: client-service
+        app: paiement-service
     spec:
       containers:
-        - name: client-service
-          image: client-service:latest
+        - name: paiement-service
+          image: paiement-service:latest
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8088
+            - containerPort: 8090
           env:
             # ================= APP =================
             - name: FLASK_ENV
               value: production
             - name: APP_PORT
-              value: "8088"
+              value: "8090"
             # ================= MYSQL =================
             - name: DB_HOST
               value: "mysql"
@@ -46,28 +46,28 @@ spec:
             - name: EUREKA_APP_NAME
               value: CLIENT-SERVICE
             - name: EUREKA_INSTANCE_HOSTNAME
-              value: client-service
+              value: paiement-service
             - name: EUREKA_INSTANCE_PORT
-              value: "8088"
+              value: "8090"
           volumeMounts:
             - name: public-key-volume
               mountPath: /app/keys
           livenessProbe:
-              httpGet:
-                path: /health
-                port: 8088
-              initialDelaySeconds: 30
-              periodSeconds: 10
+            httpGet:
+              path: /health
+              port: 8090
+            initialDelaySeconds: 30
+            periodSeconds: 10
           readinessProbe:
-              httpGet:
-                path: /health
-                port: 8088
-              initialDelaySeconds: 10
-              periodSeconds: 10
+            httpGet:
+              path: /health
+              port: 8090
+            initialDelaySeconds: 10
+            periodSeconds: 10
       volumes:
         - name: public-key-volume
           configMap:
-            name: client-publickey
+            name: paiement-publickey
             items:
               - key: publickey.pem
                 path: publickey.pem
@@ -75,12 +75,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: client-service
+  name: paiement-service
 spec:
   selector:
-    app: client-service
+    app: paiement-service
   ports:
     - protocol: TCP
-      port: 8088
-      targetPort: 8088
+      port: 8090
+      targetPort: 8090
   type: ClusterIP

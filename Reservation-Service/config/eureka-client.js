@@ -1,30 +1,28 @@
 const { Eureka } = require('eureka-js-client');
 
-const eurekaClient = new Eureka({
+const client = new Eureka({
     instance: {
-        app: 'RESERVATION-SERVICE',
-        instanceId: 'reservation-service:3000',
-        hostName: 'localhost',
-        ipAddr: '127.0.0.1',
-        preferIpAddress: false,
-        port: { '$': 3000, '@enabled': true },
+        app: process.env.EUREKA_APP_NAME,
+        hostName: process.env.EUREKA_INSTANCE_HOSTNAME,
+        ipAddr: process.env.EUREKA_INSTANCE_HOSTNAME,
+        port: { '$': Number(process.env.EUREKA_INSTANCE_PORT), '@enabled': true },
         vipAddress: 'reservation-service',
-        homePageUrl: 'http://localhost:3000/',
-        statusPageUrl: 'http://localhost:3000/health',
-        healthCheckUrl: 'http://localhost:3000/health',
+        healthCheckUrl: `http://${process.env.EUREKA_INSTANCE_HOSTNAME}:${process.env.EUREKA_INSTANCE_PORT}/health`,
+        statusPageUrl: `http://${process.env.EUREKA_INSTANCE_HOSTNAME}:${process.env.EUREKA_INSTANCE_PORT}/health`,
+        homePageUrl: `http://${process.env.EUREKA_INSTANCE_HOSTNAME}:${process.env.EUREKA_INSTANCE_PORT}/`,
         dataCenterInfo: {
             '@class': 'com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo',
             name: 'MyOwn'
-        },
-        leaseInfo: { renewalIntervalInSecs: 30, durationInSecs: 90 }
+        }
     },
     eureka: {
-        host: 'localhost',
-        port: 8761,
-        servicePath: '/eureka/apps/',
+        host: process.env.EUREKA_HOST,
+        port: Number(process.env.EUREKA_PORT),
+        servicePath: process.env.EUREKA_SERVICE_PATH,
         registerWithEureka: true,
-        fetchRegistry: false
+        fetchRegistry: true
     }
 });
 
-module.exports = eurekaClient;
+client.start();
+module.exports = client;

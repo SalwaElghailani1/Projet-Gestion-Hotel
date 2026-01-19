@@ -1,42 +1,70 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: security-service
+  name: microservice-security
+  labels:
+    app: microservice-security
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: security-service
+      app: microservice-security
   template:
     metadata:
       labels:
-        app: security-service
+        app: microservice-security
     spec:
       containers:
-        - name: security-service
-          image: security-service:latest
-          imagePullPolicy: Never
+        - name: microservice-security
+          image: microservice-security:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8070
           env:
-            - name: DISCOVERY_SERVICE_URL
-              value: http://discovery-service.default.svc.cluster.local:8761/eureka
+            # App
+            - name: SPRING_APPLICATION_NAME
+              value: microservice-security
+            - name: SERVER_PORT
+              value: "8070"
+            # Eureka
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: http://discovery-service:8761/eureka
+            - name: EUREKA_INSTANCE_HOSTNAME
+              value: microservice-security
+            - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+              value: "false"
+            # MySQL
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql:3306/project_users
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: root
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: 'update'
           readinessProbe:
             httpGet:
               path: /actuator/health
               port: 8070
-            initialDelaySeconds: 5
+            initialDelaySeconds: 120
             periodSeconds: 10
-            failureThreshold: 7
+            failureThreshold: 6
+          livenessProbe:
+              httpGet:
+                path: /actuator/health
+                port: 8070
+              initialDelaySeconds: 180
+              periodSeconds: 10
+              failureThreshold: 6
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: security-service
+  name: microservice-security
 spec:
-  type: LoadBalancer
   selector:
-    app: security-service
+    app: microservice-security
   ports:
     - port: 8070
       targetPort: 8070
+  type: ClusterIP

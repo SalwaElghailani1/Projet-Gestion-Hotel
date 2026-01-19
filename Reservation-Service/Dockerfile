@@ -1,7 +1,12 @@
 FROM node:21
 
-VOLUME /app
+WORKDIR /app
 
-COPY . /app
+COPY package*.json ./
+RUN npm install
 
-CMD ["node", "server.js"]
+COPY . .
+
+CMD ["node", "index.js"]
+
+
