@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://microservice-security:8070/v1';
+  private apiUrl = 'http://localhost:8070/v1';
   private currentUserSubject: BehaviorSubject<any>;
   public currentUser$: Observable<any>;
 

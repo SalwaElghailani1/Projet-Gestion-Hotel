@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from entity.Client import Client
 from config.security import require_role
 
-DATABASE_URL = "mysql+pymysql://root:root@mysql:3306/gestion_client"
+DATABASE_URL = "mysql+pymysql://root:@mysql:3306/gestion_client"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)

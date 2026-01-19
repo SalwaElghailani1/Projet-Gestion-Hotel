@@ -26,6 +26,7 @@ spec:
               value: Service_Interne
             - name: SERVER_PORT
               value: "8071"
+
             # Eureka
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: http://discovery-service:8761/eureka
@@ -33,13 +34,14 @@ spec:
               value: service-interne
             - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
               value: "false"
-            # MySQL
+
+            # MySQL (root + vide)
             - name: SPRING_DATASOURCE_URL
               value: jdbc:mysql://mysql:3306/profile_users
             - name: SPRING_DATASOURCE_USERNAME
               value: root
             - name: SPRING_DATASOURCE_PASSWORD
-              value: root
+              value: ""   # <-- vide pour MySQL sans password
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: 'update'
 
@@ -50,6 +52,7 @@ spec:
             initialDelaySeconds: 120
             periodSeconds: 10
             failureThreshold: 6
+
           livenessProbe:
             httpGet:
               path: /actuator/health
@@ -57,7 +60,6 @@ spec:
             initialDelaySeconds: 180
             periodSeconds: 10
             failureThreshold: 6
-
 
 ---
 apiVersion: v1
@@ -70,4 +72,4 @@ spec:
   ports:
     - port: 8071
       targetPort: 8071
-  type: ClusterIP
+  type: LoadBalancer

@@ -1,116 +1,128 @@
 package faculte.service_interne.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-
-/**
- * Représente le profil métier d'un utilisateur interne.
- * Cette entité est distincte du User de sécurité (authentification).
- * Elle contient uniquement les informations professionnelles et personnelles
- * nécessaires au fonctionnement interne du système.
- */
 @Entity
 @Table(name = "user_profiles")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class UserProfile {
 
-    /**
-     * Identifiant de l'utilisateur.
-     * Correspond exactement à l'ID du User dans le microservice Security.
-     * Il n'y a pas de duplication des utilisateurs.
-     */
     @Id
     private Integer userId;
 
-    // =========================
-    // INFORMATIONS PERSONNELLES
-    // =========================
-
-    /** Nom de l'utilisateur */
-    @Column(nullable = false)
     private String nom;
-
-    /** Prénom de l'utilisateur */
-    @Column(nullable = false)
     private String prenom;
-
-    /** Numéro de téléphone (optionnel, mais utile pour le contact) */
     private String telephone;
     private String email;
-
-    /** Adresse de résidence de l'utilisateur */
     private String adresse;
-
-    /** Numéro de carte d'identité (utile pour la vérification) */
     private String cin;
-
-    /** Date de naissance de l'utilisateur */
     private LocalDate dateNaissance;
 
-    // =========================
-    // INFORMATIONS METIER
-    // =========================
-
-    /**
-     * Rôle métier de l'utilisateur dans l'organisation.
-     * Exemple : RECEPTIONNISTE, HOUSEKEEPING, MAINTENANCE, MANAGER.
-     * Ce rôle n'a aucun lien avec les rôles de sécurité.
-     */
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false,length = 50)
-    private MetierRole metierRole = MetierRole.DEFOULT;;
+    @Column(nullable = false, length = 50)
+    private MetierRole metierRole = MetierRole.DEFOULT;
 
-    /** Département ou service de l'utilisateur */
-   // @Column(nullable = false)
     private String departement;
-
-    /** Date d'embauche de l'utilisateur */
     private LocalDate dateEmbauche;
-
-    /**
-     * Identifiant du superviseur direct.
-     * Référence vers le userId du responsable hiérarchique.
-     */
     private Integer superviseurId;
-
-    /**
-     * Indique si l'utilisateur est actuellement disponible
-     * pour effectuer des tâches (maintenance, ménage, etc.).
-     */
     private Boolean disponible = true;
 
-    // VALIDATION DU PROFIL
-    /**
-     * Statut du profil.
-     * DRAFT : profil incomplet
-     * PENDING : en attente de validation par un administrateur
-     * VALIDATED : profil validé
-     * REJECTED : profil refusé
-     */
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false,length = 50)
-    private ProfileStatus status = ProfileStatus.DRAFT;;
+    @Column(nullable = false, length = 50)
+    private ProfileStatus status = ProfileStatus.DRAFT;
 
-    /** Raison du refus du profil (si statut = REJECTED) */
     private String rejectionReason;
-    /** Date de création du profil */
     private LocalDateTime createdAt;
-    /** Date de la dernière mise à jour */
     private LocalDateTime updatedAt;
-    /** Date de validation du profil */
     private LocalDateTime validatedAt;
-    /**
-     * Identifiant de l'administrateur ayant validé le profil.
-     * Correspond au userId du Security Service.
-     */
     private Integer validatedBy;
+
+    // ===== Constructors =====
+    public UserProfile() {}
+
+    public UserProfile(Integer userId, String nom, String prenom, String telephone, String email,
+                       String adresse, String cin, LocalDate dateNaissance,
+                       MetierRole metierRole, String departement, LocalDate dateEmbauche,
+                       Integer superviseurId, Boolean disponible, ProfileStatus status,
+                       String rejectionReason, LocalDateTime createdAt,
+                       LocalDateTime updatedAt, LocalDateTime validatedAt, Integer validatedBy) {
+        this.userId = userId;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.telephone = telephone;
+        this.email = email;
+        this.adresse = adresse;
+        this.cin = cin;
+        this.dateNaissance = dateNaissance;
+        this.metierRole = metierRole;
+        this.departement = departement;
+        this.dateEmbauche = dateEmbauche;
+        this.superviseurId = superviseurId;
+        this.disponible = disponible;
+        this.status = status;
+        this.rejectionReason = rejectionReason;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.validatedAt = validatedAt;
+        this.validatedBy = validatedBy;
+    }
+
+    // ===== Getters & Setters =====
+    public Integer getUserId() { return userId; }
+    public void setUserId(Integer userId) { this.userId = userId; }
+
+    public String getNom() { return nom; }
+    public void setNom(String nom) { this.nom = nom; }
+
+    public String getPrenom() { return prenom; }
+    public void setPrenom(String prenom) { this.prenom = prenom; }
+
+    public String getTelephone() { return telephone; }
+    public void setTelephone(String telephone) { this.telephone = telephone; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getAdresse() { return adresse; }
+    public void setAdresse(String adresse) { this.adresse = adresse; }
+
+    public String getCin() { return cin; }
+    public void setCin(String cin) { this.cin = cin; }
+
+    public LocalDate getDateNaissance() { return dateNaissance; }
+    public void setDateNaissance(LocalDate dateNaissance) { this.dateNaissance = dateNaissance; }
+
+    public MetierRole getMetierRole() { return metierRole; }
+    public void setMetierRole(MetierRole metierRole) { this.metierRole = metierRole; }
+
+    public String getDepartement() { return departement; }
+    public void setDepartement(String departement) { this.departement = departement; }
+
+    public LocalDate getDateEmbauche() { return dateEmbauche; }
+    public void setDateEmbauche(LocalDate dateEmbauche) { this.dateEmbauche = dateEmbauche; }
+
+    public Integer getSuperviseurId() { return superviseurId; }
+    public void setSuperviseurId(Integer superviseurId) { this.superviseurId = superviseurId; }
+
+    public Boolean getDisponible() { return disponible; }
+    public void setDisponible(Boolean disponible) { this.disponible = disponible; }
+
+    public ProfileStatus getStatus() { return status; }
+    public void setStatus(ProfileStatus status) { this.status = status; }
+
+    public String getRejectionReason() { return rejectionReason; }
+    public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public LocalDateTime getValidatedAt() { return validatedAt; }
+    public void setValidatedAt(LocalDateTime validatedAt) { this.validatedAt = validatedAt; }
+
+    public Integer getValidatedBy() { return validatedBy; }
+    public void setValidatedBy(Integer validatedBy) { this.validatedBy = validatedBy; }
 }
-
-

@@ -14,7 +14,15 @@ from controller.api import ns
 import config.eureka_client
 
 # Database connection
-DATABASE_URL = "mysql+pymysql://root:root@mysql:3306/gestion_client"
+import os
+
+DB_USER = os.environ.get("DB_USER", "root")
+DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
+DB_HOST = os.environ.get("DB_HOST", "mysql")
+DB_PORT = os.environ.get("DB_PORT", "3306")
+DB_NAME = os.environ.get("DB_NAME", "gestion_client")
+
+DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 

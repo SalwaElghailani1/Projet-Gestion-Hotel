@@ -34,7 +34,7 @@ spec:
             - name: DB_USER
               value: "root"
             - name: DB_PASSWORD
-              value: "root"
+              value: ""
 
             # ================= EUREKA =================
             - name: EUREKA_HOST
@@ -83,4 +83,4 @@ spec:
     - protocol: TCP
       port: 8088
       targetPort: 8088
-  type: ClusterIP
+  type: LoadBalancer

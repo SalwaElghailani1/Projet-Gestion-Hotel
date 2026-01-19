@@ -26,6 +26,7 @@ spec:
               value: RoomService
             - name: SERVER_PORT
               value: "8093"
+
             # Eureka
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: http://discovery-service:8761/eureka
@@ -33,26 +34,30 @@ spec:
               value: roomservice
             - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
               value: "false"
-            # MySQL
+
+            # MySQL (root + vide)
             - name: SPRING_DATASOURCE_URL
               value: jdbc:mysql://mysql:3306/room_db
             - name: SPRING_DATASOURCE_USERNAME
               value: root
             - name: SPRING_DATASOURCE_PASSWORD
-              value: root
+              value: ""   # <-- vide pour MySQL sans password
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: 'update'
+
             # RSA Key
             - name: RSA_PUBLICKEY
               value: file:/app/keys/publicKey.pem
             # Upload directory
             - name: UPLOAD_DIR
               value: /app/uploads
+
           volumeMounts:
             - name: rsa-keys
               mountPath: /app/keys
             - name: uploads
               mountPath: /app/uploads
+
           readinessProbe:
             httpGet:
               path: /actuator/health
@@ -67,6 +72,7 @@ spec:
             initialDelaySeconds: 180
             periodSeconds: 10
             failureThreshold: 6
+
       volumes:
         - name: rsa-keys
           configMap:
@@ -85,4 +91,4 @@ spec:
   ports:
     - port: 8093
       targetPort: 8093
-  type: ClusterIP
+  type: LoadBalancer

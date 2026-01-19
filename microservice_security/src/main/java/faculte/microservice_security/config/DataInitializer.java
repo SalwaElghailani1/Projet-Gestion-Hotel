@@ -1,76 +1,64 @@
-/*package faculte.microservice_security.config;
+package faculte.microservice_security.config;
 
-import faculte.microservice_security.entities.PermissionEntity;
 import faculte.microservice_security.entities.Role;
 import faculte.microservice_security.entities.User;
-import faculte.microservice_security.repository.PermissionEntityRepository;
 import faculte.microservice_security.repository.RoleRepository;
 import faculte.microservice_security.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
+import java.util.List;
 
-@Component
-public class DataInitializer implements CommandLineRunner {
+@Configuration
+public class DataInitializer {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PermissionEntityRepository permissionRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Bean
+    CommandLineRunner initData(
+            RoleRepository roleRepository,
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder
+    ) {
+        return args -> {
+            System.out.println("📦 Début de l'initialisation des données...");
 
-    public DataInitializer(UserRepository userRepository,
-                           RoleRepository roleRepository,
-                           PermissionEntityRepository permissionRepository,
-                           PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.permissionRepository = permissionRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+            // إعداد الأدوار الأساسية
+            List<String> roles = Arrays.asList("ADMIN", "CLIENT", "MANAGER",
+                    "RECEPTIONNISTE", "HOUSEKEEPING",
+                    "MAINTENANCE", "COMPTABLE");
 
-    @Override
-    public void run(String... args) throws Exception {
-
-        String[] defaultPermissions = {"USER_CREATE", "USER_READ", "USER_UPDATE", "USER_DELETE"};
-       Set<PermissionEntity> permissions = new HashSet<>();
-        for (String permName : defaultPermissions) {
-            PermissionEntity perm = permissionRepository.findByName(permName)
-                    .orElseGet(() -> {
-                        PermissionEntity p = new PermissionEntity();
-                        p.setName(permName);
-                        return permissionRepository.save(p);
-                    });
-           permissions.add(perm);
-        }
-
-        Role adminRole = roleRepository.findByName("ADMIN")
-                .orElseGet(() -> {
+            for (String roleName : roles) {
+                if (roleRepository.findByName(roleName).isEmpty()) {
                     Role role = new Role();
-                    role.setName("ADMIN");
-                    role.setDescription("Role administrateur principal");
-                   role.setPermissions(permissions);
-                    return roleRepository.save(role);
-                });
+                    role.setName(roleName);
+                    role.setDescription("دور " + roleName);
+                    roleRepository.save(role);
+                    System.out.println("✅ Role créé: " + roleName);
+                } else {
+                    System.out.println("⚡ Role existe déjà: " + roleName);
+                }
+            }
+            if (userRepository.findByEmail("admin@hotel.com").isEmpty()) {
+                User admin = new User();
+                admin.setFirstName("Admin");
+                admin.setLastName("System");
+                admin.setEmail("admin@hotel.com");
+                admin.setPassword(passwordEncoder.encode("admin123"));
+                admin.setActive(true);
 
-        boolean adminExists = userRepository.findAll().stream()
-                .anyMatch(u -> u.getRoles().contains(adminRole));
+                // الحصول على دور ADMIN وإضافته
+                Role adminRole = roleRepository.findByName("ADMIN")
+                        .orElseThrow(() -> new RuntimeException("Role ADMIN non trouvé!"));
 
-        if (!adminExists) {
-            User adminUser = new User();
-            adminUser.setEmail("admin@example.com");
-            adminUser.setPassword(passwordEncoder.encode("admin123"));
-            adminUser.setActive(true);
-            adminUser.setFirstName("Admin");
-            adminUser.setLastName("Admin");
-            adminUser.getRoles().add(adminRole);
+                admin.getRoles().add(adminRole);
+                userRepository.save(admin);
 
-           userRepository.save(adminUser);
-            System.out.println("✅ Admin user et permissions créés avec succès !");
-        } else {
-           System.out.println("ℹ Admin user déjà existant, aucune action prise.");
-        }
+                System.out.println("✅ Admin utilisateur créé: admin@hotel.com / admin123");
+            }
+
+            System.out.println("✅ Initialisation des données terminée!");
+        };
     }
-}*/
+}

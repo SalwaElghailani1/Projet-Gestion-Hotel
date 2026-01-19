@@ -34,12 +34,19 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final RsaKeys rsaKeys;
     private final CustomUserDetailsService customUserDetailsService;
 
+
+    public SecurityConfig(
+            RsaKeys rsaKeys,
+            CustomUserDetailsService customUserDetailsService
+    ) {
+        this.rsaKeys = rsaKeys;
+        this.customUserDetailsService = customUserDetailsService;
+    }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

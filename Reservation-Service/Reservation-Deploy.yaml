@@ -20,7 +20,6 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
-
           env:
             # ================= APP =================
             - name: NODE_ENV
@@ -36,9 +35,9 @@ spec:
             - name: DB_NAME
               value: reservation_db
             - name: DB_USER
-              value: root
+              value: root         # <-- root user
             - name: DB_PASSWORD
-              value: root
+              value: ""           # <-- vide pour MySQL sans password
 
             # ================= EUREKA =================
             - name: EUREKA_HOST
@@ -60,6 +59,7 @@ spec:
               port: 3000
             initialDelaySeconds: 30
             periodSeconds: 10
+
           readinessProbe:
             httpGet:
               path: /health

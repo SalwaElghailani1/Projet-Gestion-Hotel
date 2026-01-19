@@ -24,15 +24,15 @@ spec:
               value: production
             - name: APP_PORT
               value: "8090"
-            # Example env for MongoDB
+            # ================= MongoDB =================
             - name: DB_HOST
               value: "mongodb"
             - name: DB_PORT
               value: "27017"
             - name: DB_USER
-              value: "root"
+              value: ""          # <-- vide pour passwordless MongoDB
             - name: DB_PASSWORD
-              value: "root"
+              value: ""          # <-- vide pour passwordless MongoDB
             - name: DB_NAME
               value: "payment_db"
 
@@ -49,21 +49,25 @@ spec:
               value: paiement-service
             - name: EUREKA_INSTANCE_PORT
               value: "8090"
+
           volumeMounts:
             - name: public-key-volume
               mountPath: /app/keys
+
           livenessProbe:
             httpGet:
               path: /health
               port: 8090
             initialDelaySeconds: 30
             periodSeconds: 10
+
           readinessProbe:
             httpGet:
               path: /health
               port: 8090
             initialDelaySeconds: 10
             periodSeconds: 10
+
       volumes:
         - name: public-key-volume
           configMap:

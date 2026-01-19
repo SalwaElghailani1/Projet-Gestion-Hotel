@@ -13,7 +13,6 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class RefreshTokenService {
 
     @Value("${jwt.refresh-token.expiration:604800000}") // 7 jours par défaut
@@ -21,6 +20,14 @@ public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
+
+    public RefreshTokenService(
+            RefreshTokenRepository refreshTokenRepository,
+            UserRepository userRepository
+    ) {
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.userRepository = userRepository;
+    }
 
     @Transactional
     public RefreshToken createRefreshToken(Integer userId) {
