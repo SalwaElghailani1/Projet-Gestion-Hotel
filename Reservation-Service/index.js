@@ -23,7 +23,7 @@ const options = {
             title: 'Reservation Microservice',
             version: '1.0.0'
         },
-        servers: [{ url: 'http://localhost:3000/api' }]
+        servers: [{ url: 'http://reservation-service:3000/api' }]
     },
     apis: ['./routes/*.js']
 };

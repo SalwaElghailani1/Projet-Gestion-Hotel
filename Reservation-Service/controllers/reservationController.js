@@ -14,7 +14,7 @@ exports.getAll = async (req, res) => {
                 // 🏨 get room
                 let chambre = {};
                 try {
-                    const chambreRes = await axios.get(`http://localhost:8093/rooms/${r.chambre_id}`, {
+                    const chambreRes = await axios.get(`http://roomservice:8093/rooms/${r.chambre_id}`, {
                         headers: { Authorization: req.headers.authorization }
                     });
                     chambre = chambreRes.data;
@@ -25,7 +25,7 @@ exports.getAll = async (req, res) => {
                 // 👤 get client
                 let client = {};
                 try {
-                    const clientRes = await axios.get(`http://localhost:8088/clients/${r.client_id}`, {
+                    const clientRes = await axios.get(`http://client-service:8088/clients/${r.client_id}`, {
                         headers: { Authorization: req.headers.authorization }
                     });
                     client = clientRes.data;
@@ -74,7 +74,7 @@ exports.getById = async (req, res) => {
             try {
                 // 🏨 Chambre (Flask)
                 const chambreResponse = await axios.get(
-                    `http://localhost:8093/rooms/${reservation.chambre_id}`,
+                    `http://roomservice:8093/rooms/${reservation.chambre_id}`,
                     {
                         headers: {
                             Authorization: req.headers.authorization
@@ -86,7 +86,7 @@ exports.getById = async (req, res) => {
 
                 // 👤 Client lié à la réservation (Auth / Client Service)
                 const clientResponse = await axios.get(
-                    `http://localhost:8088/clients/${reservation.client_id}`,
+                    `http://client-service:8088/clients/${reservation.client_id}`,
                     {
                         headers: {
                             Authorization: req.headers.authorization
@@ -187,7 +187,7 @@ exports.create = async (req, res) => {
         const fin = new Date(dateFin);
 
         // 🏨 Get room info
-        const roomResponse = await axios.get(`http://localhost:8093/rooms/${chambre_id}`, {
+        const roomResponse = await axios.get(`http://roomservice:8093/rooms/${chambre_id}`, {
             headers: { Authorization: req.headers.authorization }
         });
 
@@ -362,7 +362,7 @@ exports.getByClient = async (req, res) => {
             let client = {};
 
             try {
-                const chambreRes = await axios.get(`http://localhost:8093/rooms/${r.chambre_id}`, {
+                const chambreRes = await axios.get(`http://roomservice:8093/rooms/${r.chambre_id}`, {
                     headers: { Authorization: req.headers.authorization }
                 });
                 chambre = chambreRes.data;

@@ -64,17 +64,17 @@ export class UserService {
   private getHeaders(): HttpHeaders {
     // استخدم authService للحصول على التوكن
     const token = this.authService.getToken();
-    
+
     if (!token) {
       console.error('❌ [UserService] No token available!');
       this.router.navigate(['/login']);
     }
-    
+
     console.log('🔑 [UserService] Using token for request:', {
       tokenExists: !!token,
       firstChars: token ? token.substring(0, 20) + '...' : 'none'
     });
-    
+
     return new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
@@ -86,7 +86,7 @@ export class UserService {
   getAllUsers(): Observable<UserResponseDTO[]> {
     console.log('🔄 [UserService] Fetching all users...');
     console.log('🌐 API URL:', `${this.apiUrl}/users`);
-    
+
     return this.http.get<UserResponseDTO[]>(
       `${this.apiUrl}/users`,
       { headers: this.getHeaders() }
@@ -109,7 +109,7 @@ export class UserService {
 
   getUserById(id: number): Observable<UserResponseDTO> {
     console.log('🔄 [UserService] Fetching user by ID:', id);
-    
+
     return this.http.get<UserResponseDTO>(
       `${this.apiUrl}/users/${id}`,
       { headers: this.getHeaders() }
@@ -125,7 +125,7 @@ export class UserService {
 
   createUser(userData: CreateUserRequest): Observable<UserResponseDTO> {
     console.log('🔄 [UserService] Creating new user:', userData.email);
-    
+
     return this.http.post<UserResponseDTO>(
       `${this.apiUrl}/users/create`,
       userData,
@@ -142,7 +142,7 @@ export class UserService {
 
   updateUser(id: number, data: UpdateUserRequest): Observable<UserResponseDTO> {
     console.log('🔄 [UserService] Updating user:', id, data);
-    
+
     return this.http.patch<UserResponseDTO>(
       `${this.apiUrl}/users/${id}`,
       data,
@@ -159,10 +159,10 @@ export class UserService {
 
   deleteUser(id: number): Observable<any> {
     console.log('🔄 [UserService] Deleting user:', id);
-    
+
     return this.http.delete(
       `${this.apiUrl}/users/${id}`,
-      { 
+      {
         headers: this.getHeaders(),
         observe: 'response',
         responseType: 'text'
@@ -175,9 +175,9 @@ export class UserService {
         try {
           return JSON.parse(response.body || '{}');
         } catch {
-          return { 
-            success: true, 
-            message: response.body || 'Utilisateur supprimé avec succès' 
+          return {
+            success: true,
+            message: response.body || 'Utilisateur supprimé avec succès'
           };
         }
       }),
@@ -193,12 +193,12 @@ toggleUserStatus(id: number, active: boolean): Observable<UserResponseDTO> {
   console.log('🔄 [UserService] Toggling status for user:', id, 'to', active);
   console.log('📤 [UserService] Sending payload:', { active });
   console.log('🌐 [UserService] URL:', `${this.apiUrl}/users/${id}/status`);
-  
+
   // Option 1: Avec body
   return this.http.patch<UserResponseDTO>(
     `${this.apiUrl}/users/${id}/status`,
     { active: active },
-    { 
+    {
       headers: this.getHeaders(),
       observe: 'response' // Pour voir la réponse complète
     }
@@ -237,7 +237,7 @@ toggleUserStatus(id: number, active: boolean): Observable<UserResponseDTO> {
 
   getAllRoles(): Observable<Role[]> {
     console.log('🔄 [UserService] Fetching all roles...');
-    
+
     return this.http.get<Role[]>(
       `${this.apiUrl}/roles`,
       { headers: this.getHeaders() }
@@ -261,9 +261,9 @@ toggleUserStatus(id: number, active: boolean): Observable<UserResponseDTO> {
       message: error.message,
       error: error.error
     });
-    
+
     let errorMessage = 'Une erreur est survenue';
-    
+
     if (error.error?.message) {
       errorMessage = error.error.message;
     } else if (error.error?.errors) {
@@ -278,8 +278,8 @@ toggleUserStatus(id: number, active: boolean): Observable<UserResponseDTO> {
       // تأخير قليل قبل التوجيه
       setTimeout(() => {
         this.authService.logout();
-        this.router.navigate(['/login'], { 
-          queryParams: { returnUrl: this.router.url } 
+        this.router.navigate(['/login'], {
+          queryParams: { returnUrl: this.router.url }
         });
       }, 2000);
     } else if (error.status === 403) {
@@ -291,9 +291,9 @@ toggleUserStatus(id: number, active: boolean): Observable<UserResponseDTO> {
     } else if (error.status === 500) {
       errorMessage = 'Erreur interne du serveur. Veuillez réessayer plus tard.';
     }
-    
+
     console.error('📋 [UserService] Error message to display:', errorMessage);
-    
+
     return throwError(() => ({
       message: errorMessage,
       status: error.status,
@@ -314,15 +314,15 @@ toggleUserStatus(id: number, active: boolean): Observable<UserResponseDTO> {
 
 
 
-  
+
   getUsersByRoleStats(): Observable<UserStatsByRole[]> {
     console.log('🔄 [UserService] Fetching users stats by role...');
-    
+
     return this.getAllUsers().pipe(
       map(users => {
         // Calculer les statistiques par rôle
         const roleStats = new Map<string, { total: number, active: number }>();
-        
+
         users.forEach(user => {
           user.roles.forEach(role => {
             if (!roleStats.has(role)) {
@@ -335,11 +335,11 @@ toggleUserStatus(id: number, active: boolean): Observable<UserResponseDTO> {
             }
           });
         });
-        
+
         // Convertir en tableau
         const totalUsers = users.length;
         const statsArray: UserStatsByRole[] = [];
-        
+
         roleStats.forEach((value, role) => {
           statsArray.push({
             role,
@@ -349,10 +349,10 @@ toggleUserStatus(id: number, active: boolean): Observable<UserResponseDTO> {
             inactive: value.total - value.active
           });
         });
-        
+
         // Trier par nombre décroissant
         statsArray.sort((a, b) => b.count - a.count);
-        
+
         console.log('📊 User stats by role:', statsArray);
         return statsArray;
       })
