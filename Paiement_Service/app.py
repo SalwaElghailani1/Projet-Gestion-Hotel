@@ -7,6 +7,12 @@ from Service.PaiementService import PaiementService
 from Repository.PaiementRepository import PaiementRepository
 from config.security import require_role
 from flask_cors import CORS
+from config.eureka_client import eureka_client
+import os
+try:
+    import eureka_client
+except Exception as e:
+    print("⚠️ Eureka not started:", e)
 # ================= Flask App =================
 app = Flask(__name__)
 CORS(app)
@@ -45,7 +51,9 @@ paiement_model = api.model("Paiement", {
 # ================= Service =================
 repo = PaiementRepository(paiements_collection.database)
 service = PaiementService(repo)
-
+@app.route("/health")
+def health():
+    return "UP", 200
 # ================= Endpoints =================
 
 @ns.route("/")
@@ -81,4 +89,5 @@ class PaiementResource(Resource):
 
 # ================= Run =================
 if __name__ == "__main__":
-    app.run(debug=True, port=8090)
+    app.run(host="0.0.0.0", port=int(os.environ.get("APP_PORT", 8090)))
+

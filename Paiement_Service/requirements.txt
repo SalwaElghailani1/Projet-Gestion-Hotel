@@ -1,4 +1,7 @@
 flask
+flask-restx
 flask-pymongo
 flask-cors
 python-dotenv
+py-eureka-client
+pyjwt

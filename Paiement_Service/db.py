@@ -1,6 +1,11 @@
 from pymongo import MongoClient
+import os
 
-MONGO_URI = "mongodb://localhost:27017/"
+# Use environment variables from Deployment
+MONGO_HOST = os.environ.get("DB_HOST", "mongodb")  # 'mongodb' service name f K8s
+MONGO_PORT = int(os.environ.get("DB_PORT", 27017))
+
+MONGO_URI = f"mongodb://{MONGO_HOST}:{MONGO_PORT}/"
 
 client = MongoClient(MONGO_URI)
 

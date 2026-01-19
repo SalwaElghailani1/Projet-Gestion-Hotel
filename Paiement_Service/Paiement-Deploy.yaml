@@ -24,17 +24,17 @@ spec:
               value: production
             - name: APP_PORT
               value: "8090"
-            # ================= MYSQL =================
+            # Example env for MongoDB
             - name: DB_HOST
-              value: "mysql"
+              value: "mongodb"
             - name: DB_PORT
-              value: "3306"
-            - name: DB_NAME
-              value: "gestion_client"
+              value: "27017"
             - name: DB_USER
               value: "root"
             - name: DB_PASSWORD
               value: "root"
+            - name: DB_NAME
+              value: "payment_db"
 
             # ================= EUREKA =================
             - name: EUREKA_HOST
@@ -44,7 +44,7 @@ spec:
             - name: EUREKA_SERVICE_PATH
               value: /eureka/apps/
             - name: EUREKA_APP_NAME
-              value: CLIENT-SERVICE
+              value: PAIEMENT-SERVICE
             - name: EUREKA_INSTANCE_HOSTNAME
               value: paiement-service
             - name: EUREKA_INSTANCE_PORT
