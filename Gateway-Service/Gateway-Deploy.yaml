@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-service
+  labels:
+    app: gateway-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway-service
+  template:
+    metadata:
+      labels:
+        app: gateway-service
+    spec:
+      volumes:
+        - name: public-key-volume
+          configMap:
+            name: gateway-public-key
+
+      containers:
+        - name: gateway-service
+          image: gateway-service:latest
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 8888
+
+          env:
+            # Eureka
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: http://discovery-service:8761/eureka
+            - name: EUREKA_INSTANCE_HOSTNAME
+              value: gateway-service
+            - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+              value: "false"
+
+          volumeMounts:
+            - name: public-key-volume
+              mountPath: /app/Keys
+              readOnly: true
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8888
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            failureThreshold: 6
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8888
+            initialDelaySeconds: 180
+            periodSeconds: 10
+            failureThreshold: 6
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-service
+spec:
+  selector:
+    app: gateway-service
+  ports:
+    - port: 8888
+      targetPort: 8888
+  type: LoadBalancer

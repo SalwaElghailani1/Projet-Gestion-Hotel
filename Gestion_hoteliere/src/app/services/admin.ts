@@ -35,7 +35,7 @@ export interface AuditLog {
   providedIn: 'root'
 })
 export class AdminService {
-  private apiUrl = 'http://localhost:8070/v1/admin';
+  private apiUrl = 'http://microservice-security:8070/v1/admin';
 
   constructor(private http: HttpClient) {}
 

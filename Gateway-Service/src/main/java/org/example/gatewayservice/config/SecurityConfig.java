@@ -17,7 +17,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeExchange(auth -> auth
                         .pathMatchers("/eureka/**").permitAll()
-                        .pathMatchers("/microservice-security/v1/users/**").permitAll() // login / register
+                        .pathMatchers("/microservice-security/v1/users/**", "/actuator/**").permitAll() // login / register
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth ->

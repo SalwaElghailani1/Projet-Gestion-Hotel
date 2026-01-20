@@ -8,7 +8,7 @@ import {Router} from '@angular/router';
 })
 export class UserProfileService {
 
-  private apiUrl = 'http://localhost:8071/v1/user-profiles';
+  private apiUrl = 'http://service-interne:8071/v1/user-profiles';
 
   private currentUserSubject: BehaviorSubject<any>;
   public currentUser$: Observable<any>;
@@ -59,7 +59,7 @@ export class UserProfileService {
     const token = localStorage.getItem('token');
 
     if (token) {
-      this.http.post('http://localhost:8071/v1/user-profiles/logout', {}, {
+      this.http.post('http://service-interne:8071/v1/user-profiles/logout', {}, {
         headers: { Authorization: `Bearer ${token}` }
       }).subscribe({
         next: () => {

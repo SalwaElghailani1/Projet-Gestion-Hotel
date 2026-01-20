@@ -31,7 +31,7 @@ export interface Task {
 })
 export class HousekeepingService {
 
-  private apiUrl = 'http://localhost:8093'; // Même port que RoomService
+  private apiUrl = 'http://roomservice:8093'; // Même port que RoomService
 
   constructor(private http: HttpClient) {}
 

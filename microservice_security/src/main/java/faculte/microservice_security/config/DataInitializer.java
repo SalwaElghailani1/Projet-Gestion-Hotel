@@ -23,8 +23,6 @@ public class DataInitializer {
     ) {
         return args -> {
             System.out.println("📦 Début de l'initialisation des données...");
-
-            // إعداد الأدوار الأساسية
             List<String> roles = Arrays.asList("ADMIN", "CLIENT", "MANAGER",
                     "RECEPTIONNISTE", "HOUSEKEEPING",
                     "MAINTENANCE", "COMPTABLE");
@@ -33,7 +31,7 @@ public class DataInitializer {
                 if (roleRepository.findByName(roleName).isEmpty()) {
                     Role role = new Role();
                     role.setName(roleName);
-                    role.setDescription("دور " + roleName);
+                    role.setDescription(roleName);
                     roleRepository.save(role);
                     System.out.println("✅ Role créé: " + roleName);
                 } else {
@@ -48,7 +46,6 @@ public class DataInitializer {
                 admin.setPassword(passwordEncoder.encode("admin123"));
                 admin.setActive(true);
 
-                // الحصول على دور ADMIN وإضافته
                 Role adminRole = roleRepository.findByName("ADMIN")
                         .orElseThrow(() -> new RuntimeException("Role ADMIN non trouvé!"));
 

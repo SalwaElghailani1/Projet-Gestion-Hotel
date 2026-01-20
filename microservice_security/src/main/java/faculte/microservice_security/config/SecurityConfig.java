@@ -70,7 +70,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // Origine autorisée (Frontend Angular)
-        config.setAllowedOrigins(Arrays.asList("*"));
+        config.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
 
         // Méthodes HTTP autorisées (GET, POST, PUT, DELETE, etc.)
         config.setAllowedMethods(Arrays.asList("*"));

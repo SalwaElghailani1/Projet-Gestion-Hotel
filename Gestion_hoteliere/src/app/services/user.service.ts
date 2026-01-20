@@ -53,7 +53,7 @@ export interface UserStatsByRole {
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'http://localhost:8070/v1';
+  private apiUrl = 'http://microservice-security:8070/v1';
 
   constructor(
     private http: HttpClient,
