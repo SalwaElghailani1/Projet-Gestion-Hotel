@@ -1,0 +1,107 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 120s
+      evaluation_interval: 120s
+
+    scrape_configs:
+
+      # ================= Spring Boot =================
+      - job_name: 'microservice-security'
+        metrics_path: '/actuator/prometheus'
+        scrape_interval: 5s
+        static_configs:
+          - targets: ['microservice-security:8070']
+            labels:
+              application: 'microservice-security'
+
+      - job_name: 'roomservice'
+        metrics_path: '/actuator/prometheus'
+        scrape_interval: 5s
+        static_configs:
+          - targets: ['roomservice:8093']
+            labels:
+              application: 'roomservice'
+
+      - job_name: 'service-interne'
+        metrics_path: '/actuator/prometheus'
+        scrape_interval: 5s
+        static_configs:
+          - targets: ['service-interne:8071']
+            labels:
+              application: 'service-interne'
+
+      # ================= Node.js =================
+      - job_name: 'reservation-service'
+        metrics_path: '/metrics'
+        scrape_interval: 5s
+        static_configs:
+          - targets: ['reservation-service:3000']
+            labels:
+              application: 'reservation-service'
+
+      # ================= Flask =================
+      - job_name: 'client-service'
+        metrics_path: '/metrics'
+        scrape_interval: 5s
+        static_configs:
+          - targets: ['client-service:8088']
+            labels:
+              application: 'client-service'
+
+      - job_name: 'paiement-service'
+        metrics_path: '/metrics'
+        scrape_interval: 5s
+        static_configs:
+          - targets: ['paiement-service:8090']
+            labels:
+              application: 'paiement-service'
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-service
+  template:
+    metadata:
+      labels:
+        app: prometheus-service
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+            - name: prometheus-config
+              mountPath: /etc/prometheus/prometheus.yml
+              subPath: prometheus.yml
+      volumes:
+        - name: prometheus-config
+          configMap:
+            name: prometheus-config
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-service
+spec:
+  selector:
+    app: prometheus-service
+  ports:
+    - protocol: TCP
+      port: 5050
+      targetPort: 9090
+  type: LoadBalancer

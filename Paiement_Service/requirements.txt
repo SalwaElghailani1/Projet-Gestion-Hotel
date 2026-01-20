@@ -5,3 +5,4 @@ flask-cors
 python-dotenv
 py-eureka-client
 pyjwt
+prometheus-flask-exporter~=0.23.0

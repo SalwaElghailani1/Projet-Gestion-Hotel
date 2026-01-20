@@ -41,14 +41,14 @@
                 <div class="form-row">
                   <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Nom du nouveau rôle</mat-label>
-                    <input matInput 
-                           [(ngModel)]="newRoleName" 
+                    <input matInput
+                           [(ngModel)]="newRoleName"
                            placeholder="Ex: ADMIN, USER, MODERATOR"
                            (keyup.enter)="createRole()">
                     <mat-hint>Utilisez des lettres majuscules</mat-hint>
                   </mat-form-field>
-                  <button mat-raised-button 
-                          color="primary" 
+                  <button mat-raised-button
+                          color="primary"
                           [disabled]="!newRoleName.trim()"
                           (click)="createRole()">
                     <mat-icon>add</mat-icon>
@@ -62,8 +62,8 @@
                     <mat-icon>info</mat-icon>
                     <p>Aucun rôle créé</p>
                   </div>
-                  
-                  <mat-list-item *ngFor="let role of roles" 
+
+                  <mat-list-item *ngFor="let role of roles"
                                  [class.selected]="role.id === selectedRole?.id"
                                  (click)="selectedRole = role">
                     <div class="role-item">
@@ -73,8 +73,8 @@
                           ({{role.permissions.length}} permission{{role.permissions.length > 1 ? 's' : ''}})
                         </span>
                       </div>
-                      <button mat-icon-button 
-                              color="warn" 
+                      <button mat-icon-button
+                              color="warn"
                               (click)="deleteRole(role); $event.stopPropagation()"
                               matTooltip="Supprimer ce rôle">
                         <mat-icon>delete</mat-icon>
@@ -98,8 +98,8 @@
               <mat-card-content>
                 <div class="details-section">
                   <h4>Permissions assignées :</h4>
-                  
-                  <div *ngIf="!selectedRole.permissions || selectedRole.permissions.length === 0" 
+
+                  <div *ngIf="!selectedRole.permissions || selectedRole.permissions.length === 0"
                        class="empty-state">
                     <mat-icon>warning</mat-icon>
                     <p>Aucune permission assignée</p>
@@ -113,17 +113,6 @@
                       <mat-icon matChipRemove>cancel</mat-icon>
                     </mat-chip-option>
                   </mat-chip-listbox>
-                </div>
-
-                <div class="statistics">
-                  <div class="stat-item">
-                    <mat-icon>date_range</mat-icon>
-                    <span>Créé le : {{selectedRole.createdAt | date:'dd/MM/yyyy'}}</span>
-                  </div>
-                  <div class="stat-item">
-                    <mat-icon>update</mat-icon>
-                    <span>Modifié le : {{selectedRole.updatedAt | date:'dd/MM/yyyy'}}</span>
-                  </div>
                 </div>
               </mat-card-content>
             </mat-card>
@@ -150,14 +139,14 @@
               <div class="form-row permission-form">
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Nom de la nouvelle permission</mat-label>
-                  <input matInput 
-                         [(ngModel)]="newPermissionName" 
+                  <input matInput
+                         [(ngModel)]="newPermissionName"
                          placeholder="Ex: CREATE_USER, DELETE_PRODUCT, VIEW_REPORTS"
                          (keyup.enter)="createPermission()">
                   <mat-hint>Format recommandé : ACTION_RESSOURCE (majuscules)</mat-hint>
                 </mat-form-field>
-                <button mat-raised-button 
-                        color="primary" 
+                <button mat-raised-button
+                        color="primary"
                         [disabled]="!newPermissionName.trim()"
                         (click)="createPermission()">
                   <mat-icon>add</mat-icon>
@@ -167,7 +156,7 @@
 
               <!-- Liste des permissions -->
               <h3>Permissions existantes ({{permissions.length}})</h3>
-              
+
               <div *ngIf="permissions.length === 0" class="empty-state large">
                 <mat-icon>info</mat-icon>
                 <p>Aucune permission créée</p>
@@ -188,8 +177,8 @@
                     <p>Créée le : {{permission.createdAt | date:'dd/MM/yyyy'}}</p>
                   </mat-card-content>
                   <mat-card-actions align="end">
-                    <button mat-button 
-                            color="warn" 
+                    <button mat-button
+                            color="warn"
                             (click)="deletePermission(permission)"
                             matTooltip="Supprimer cette permission">
                       <mat-icon>delete</mat-icon>
@@ -240,7 +229,7 @@
                   <!-- Permissions du rôle sélectionné -->
                   <div *ngIf="selectedRole" class="current-permissions">
                     <h4>Permissions actuelles de {{selectedRole.name}} :</h4>
-                    <div *ngIf="!selectedRole.permissions || selectedRole.permissions.length === 0" 
+                    <div *ngIf="!selectedRole.permissions || selectedRole.permissions.length === 0"
                          class="empty-state">
                       <mat-icon>warning</mat-icon>
                       <p>Aucune permission assignée</p>
@@ -273,8 +262,8 @@
 
                   <!-- Bouton d'assignation -->
                   <div class="assign-button-container">
-                    <button mat-raised-button 
-                            color="primary" 
+                    <button mat-raised-button
+                            color="primary"
                             [disabled]="!selectedRole || !selectedPermission"
                             (click)="assignPermissionToRole()"
                             class="assign-button">
@@ -282,7 +271,7 @@
                       Assigner la permission au rôle
                     </button>
                     <p class="hint" *ngIf="selectedRole && selectedPermission">
-                      Vous allez assigner <strong>{{selectedPermission.name}}</strong> 
+                      Vous allez assigner <strong>{{selectedPermission.name}}</strong>
                       au rôle <strong>{{selectedRole.name}}</strong>
                     </p>
                   </div>

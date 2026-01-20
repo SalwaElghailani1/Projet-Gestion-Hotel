@@ -1,4 +1,3 @@
-# app.py
 import os
 from flask import Flask
 from flask_restx import Api
@@ -6,16 +5,15 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from entity.base import Base
 from flask_cors import CORS
+from prometheus_flask_exporter import PrometheusMetrics
 
 from entity.Client import Client
 from controller.api import ns
 
-# Eureka registration: automatic f import
+# Eureka registration
 import config.eureka_client
 
-# Database connection
-import os
-
+# Database config
 DB_USER = os.environ.get("DB_USER", "root")
 DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
 DB_HOST = os.environ.get("DB_HOST", "mysql")
@@ -32,6 +30,11 @@ Base.metadata.create_all(bind=engine)
 # Flask app
 app = Flask(__name__)
 
+# ✅ Prometheus
+metrics = PrometheusMetrics(app)
+metrics.info('client_service_info', 'Client service info', version='1.0.0')
+
+# Swagger security
 authorizations = {
     'Bearer Auth': {
         'type': 'apiKey',
@@ -50,13 +53,13 @@ api = Api(
 
 api.add_namespace(ns, path="/clients")
 
+# CORS
 CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}})
 
+# Health check (K8s)
 @app.route("/health")
 def health():
     return "OK", 200
 
-
 if __name__ == "__main__":
-    # Kubernetes needs host=0.0.0.0
     app.run(host="0.0.0.0", port=int(os.environ.get("APP_PORT", 8088)))
