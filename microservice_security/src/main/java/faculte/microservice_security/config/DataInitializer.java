@@ -33,16 +33,16 @@ public class DataInitializer {
                     role.setName(roleName);
                     role.setDescription(roleName);
                     roleRepository.save(role);
-                    System.out.println("✅ Role créé: " + roleName);
+                    System.out.println(roleName);
                 } else {
-                    System.out.println("⚡ Role existe déjà: " + roleName);
+                    System.out.println(roleName);
                 }
             }
             if (userRepository.findByEmail("admin@hotel.com").isEmpty()) {
                 User admin = new User();
                 admin.setFirstName("Admin");
-                admin.setLastName("System");
-                admin.setEmail("admin@hotel.com");
+                admin.setLastName("Admin");
+                admin.setEmail("admin@example.com");
                 admin.setPassword(passwordEncoder.encode("admin123"));
                 admin.setActive(true);
 
@@ -52,7 +52,7 @@ public class DataInitializer {
                 admin.getRoles().add(adminRole);
                 userRepository.save(admin);
 
-                System.out.println("✅ Admin utilisateur créé: admin@hotel.com / admin123");
+                System.out.println("✅ Admin utilisateur créé: admin@example.com / admin123");
             }
 
             System.out.println("✅ Initialisation des données terminée!");
