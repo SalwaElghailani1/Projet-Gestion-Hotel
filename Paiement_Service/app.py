@@ -67,6 +67,10 @@ service = PaiementService(repo)
 def health():
     return "UP", 200
 
+@app.route("/actuator/prometheus")
+def prometheus_endpoint():
+    return metrics.do_not_use_this_route()
+
 # ================= Endpoints =================
 @ns.route("/")
 class PaiementList(Resource):

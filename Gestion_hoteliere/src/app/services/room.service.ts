@@ -9,7 +9,7 @@ import {tap} from 'rxjs/operators';
 export class RoomService {
 
 
-  private apiUrl = 'http://roomservice:8093/rooms';
+  private apiUrl = 'http://localhost:8093/rooms';
 
   constructor(private http: HttpClient) {}
 
@@ -55,7 +55,7 @@ export class RoomService {
   uploadImage(file: File): Observable<string> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post('http://roomservice:8093/rooms/upload', formData, { responseType: 'text' });
+    return this.http.post('http://localhost:8093/rooms/upload', formData, { responseType: 'text' });
   }
 
 
@@ -80,7 +80,7 @@ export class RoomService {
     });
 
     return this.http.patch(
-      `http://roomservice:8093/rooms/${roomId}/etat/${etat}`,
+      `http://localhost:8093/rooms/${roomId}/etat/${etat}`,
       {},
       { headers }
     );

@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from entity.base import Base
 from flask_cors import CORS
 from prometheus_flask_exporter import PrometheusMetrics
+from flask import Response
 
 from entity.Client import Client
 from controller.api import ns
@@ -31,8 +32,8 @@ Base.metadata.create_all(bind=engine)
 app = Flask(__name__)
 
 # ✅ Prometheus
-metrics = PrometheusMetrics(app)
-metrics.info('client_service_info', 'Client service info', version='1.0.0')
+metrics = PrometheusMetrics(app, path='/actuator/prometheus', group_by='application')
+metrics.info('client_service_info', 'Client service info', version='1.0.0', application='client-service')
 
 # Swagger security
 authorizations = {
